@@ -1,7 +1,7 @@
 package proyectoFinal;
 
 public abstract class Ship implements MilitaryUnit, Variables{
-	int armor;
-	int initialArmor;
-	int baseDamage;
+	private int armor;
+	private int initialArmor;
+	private int baseDamage;
 }
