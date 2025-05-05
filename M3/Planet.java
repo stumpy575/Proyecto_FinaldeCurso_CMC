@@ -2,18 +2,19 @@ package proyectoFinal;
 
 import java.util.ArrayList;
 
-public class Planet implements MilitaryUnit {
+public class Planet {
 	private int technologyDefense;
 	private int technologyAtack;
 	private int metal;
 	private int deuterium;
 	private int upgradeDefenseTechnologyDeuteriumCost;
 	private int upgradeAttackTechnologyDeuteriumCost;
-	ArrayList<MilitaryUnit>[] army = new ArrayList[7];
+	ArrayList<MilitaryUnit>[] army ;
+	
+	
 	
 	public Planet(int technologyDefense, int technologyAtack, int metal, int deuterium,
-			int upgradeDefenseTechnologyDeuteriumCost, int upgradeAttackTechnologyDeuteriumCost,
-			ArrayList<MilitaryUnit>[] army) {
+			int upgradeDefenseTechnologyDeuteriumCost, int upgradeAttackTechnologyDeuteriumCost) {
 		super();
 		this.technologyDefense = technologyDefense;
 		this.technologyAtack = technologyAtack;
@@ -21,7 +22,7 @@ public class Planet implements MilitaryUnit {
 		this.deuterium = deuterium;
 		this.upgradeDefenseTechnologyDeuteriumCost = upgradeDefenseTechnologyDeuteriumCost;
 		this.upgradeAttackTechnologyDeuteriumCost = upgradeAttackTechnologyDeuteriumCost;
-		this.army = army;
+		this.army = new ArrayList[7];
 	}
 	
 	public int getTechnologyDefense() {
@@ -66,47 +67,43 @@ public class Planet implements MilitaryUnit {
 	public void setArmy(ArrayList<MilitaryUnit>[] army) {
 		this.army = army;
 	}
-	@Override
-	public int attack() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public void takeDamage(int receivedDamage) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public int getCurrentArmor() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public int getMetalCost() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public int getDeuteriumCost() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public int getChanceGeneratingWaste() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public int getChanceAttackAgain() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public void resetArmor() {
-		// TODO Auto-generated method stub
-		
-	}
 	
-	
-	
+	 void newLightHunter(int n) {
+		 for (int i = 0; i<n; i++) {
+			 army[0].add((MilitaryUnit) new LightHunter()); 
+		 }
+	 }
+	 void newHeavyHunter(int n) {
+		 for (int i = 0; i<n; i++) {
+			 army[1].add((MilitaryUnit) new HeavyHunter()); 
+		 }
+	 }
+	 void newBattleShip(int n) {
+		 for (int i = 0; i<n; i++) {
+			 army[2].add((MilitaryUnit) new BattleShip()); 
+		 }
+	 }
+	 void newArmoredShip(int n) {
+		 for (int i = 0; i<n; i++) {
+			 army[3].add((MilitaryUnit) new ArmoredShip()); 
+		 }
+	 }
+	 void newMissileLauncher(int n) {
+		 for (int i = 0; i<n; i++) {
+			 army[4].add((MilitaryUnit) new MissileLauncher()); 
+		 }
+	 }
+	 void newIonCannon(int n) {
+		 for (int i = 0; i<n; i++) {
+			 army[5].add((MilitaryUnit) new IonCannon()); 
+		 }
+	 }
+	 void newPlasmaCannon(int n) {
+		 for (int i = 0; i<n; i++) {
+			 army[1].add((MilitaryUnit) new PlasmaCannon()); 
+		 }
+	 }
+	 Void printStats() {
+		 //hay que hacer el metodo
+	 }
 }
