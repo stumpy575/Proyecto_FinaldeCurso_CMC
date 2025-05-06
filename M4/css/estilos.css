@@ -1,0 +1,100 @@
+ /* General */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+}
+
+main, h1, h2, p, ol {
+    padding: 0 1rem;
+}
+
+/* Sticky Menu */
+header.sticky {
+    position: sticky;
+    top: 0;
+    background-color: #1f1f1f;
+    z-index: 1000;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 1rem;
+    background-color: #1f1f1f;
+}
+
+nav ul li {
+    margin: 0 15px;
+    transition: transform 0.3s ease;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #0077ff;
+    transform: scale(1.1); /* Resalta hacia afuera */
+    border-radius: 5px;
+}
+
+/* Footer */
+footer {
+    background-color: #1f1f1f;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+/* Imagen animada en portada */
+img.animada {
+    display: block;
+    margin: 2rem auto;
+    width: 80%;
+    border: 3px solid #00ffff;
+    animation: flotar 3s ease-in-out infinite;
+}
+
+@keyframes flotar {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+/* Input Batallas */
+input, button {
+    padding: 0.5rem;
+    margin-top: 1rem;
+    border: none;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #0077ff;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #005fcc;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+    }
+
+    img.animada {
+        width: 95%;
+    }
+}

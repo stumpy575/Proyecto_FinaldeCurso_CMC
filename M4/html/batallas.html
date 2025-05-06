@@ -1,0 +1,42 @@
+<!--Tengo que hacer un tutorial de como jugar a un juego linkado a la pagina index, y en este html tenngo que Batallas, muestra el reporte de una batalla.
+- Un campo de input para introducir un número de batalla y mediante
+javascript obtener el enlace al fichero html con los datos de la batalla y
+mostrarlo.-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spacewars - Tutorial</title>
+    <link rel="stylesheet" href="../css/estilos.css">
+ 
+</head>
+<body>
+    <header class="sticky">
+        <nav>
+          <ul>
+            <li><a href="index.html">Intro</a></li>
+            <li><a href="tutorial.html">Tutorial</a></li>
+            <li><a href="batallas.html">Battles</a></li>
+            <li><a href="about.html">About Us</a></li>
+          </ul>
+        </nav>
+      </header>
+    <h1>¡Bienvenido al record de batallas!</h1>
+    <p>En este apartado podrás ver el resultado de las batallas que has realizado.</p>
+    <p>Introduce el número de batalla para ver el resultado:</p>
+    <input id="numero" type="number"></input>
+    <button type="button" id="comprobar">Numero de la batalla</button>
+    <p id="resultado"> </p>
+    <script src="js/batallas.js"></script>
+    <footer>
+        <p>&copy; Copyright</p>
+    </footer>
+</body>
+</html>
+<!-- <script src="js/batallas.js"></script> -->
+document.getElementById('comprobar').addEventListener('click', function() {
+    const numeroBatalla = document.getElementById('numero').value;
+    const url = `batalla_${numeroBatalla}.html`;
+    document.getElementById('resultado').innerHTML = `<iframe src="${url}" width="600" height="400"></iframe>`;
+});
