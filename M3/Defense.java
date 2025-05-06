@@ -39,7 +39,6 @@ class MissileLauncher extends Defense {
 
 	@Override
 	public int attack() {
-		// TODO Auto-generated method stub
 		return super.getBaseDamage();
 	}
 
@@ -60,19 +59,16 @@ class MissileLauncher extends Defense {
 
 	@Override
 	public int getDeuteriumCost() {
-		// TODO Auto-generated method stub
 		return DEUTERIUM_COST_MISSILELAUNCHER;
 	}
 
 	@Override
 	public int getChanceGeneratingWaste() {
-		// TODO Auto-generated method stub
 		return CHANCE_GENERATNG_WASTE_MISSILELAUNCHER;
 	}
 
 	@Override
 	public int getChanceAttackAgain() {
-		// TODO Auto-generated method stub
 		return CHANCE_ATTACK_AGAIN_MISSILELAUNCHER;
 	}
 
@@ -91,7 +87,6 @@ class IonCannon extends Defense {
 
 	@Override
 	public int attack() {
-		// TODO Auto-generated method stub
 		return super.getBaseDamage();
 	}
 
@@ -122,7 +117,6 @@ class IonCannon extends Defense {
 
 	@Override
 	public int getChanceAttackAgain() {
-		// TODO Auto-generated method stub
 		return CHANCE_ATTACK_AGAIN_IONCANNON;
 	}
 

@@ -6,7 +6,7 @@ import java.util.Random;
 public class Battle implements Variables{
 	private ArrayList<MilitaryUnit>[] planetArmy;
 	private ArrayList<MilitaryUnit>[] enemyArmy;
-	private ArrayList[][] armies;
+	private ArrayList<MilitaryUnit>[][] armies;
 	private String battleDevelopment;
 	private int [][] initialCostFleet;
 	private int initialNumberUnitsPlanet, initialNumberUnitsEnemy;
@@ -21,17 +21,27 @@ public class Battle implements Variables{
 		this.battleDevelopment = "";
 	}
 	
-	public void startBattle() {
+	public void performBattle() {
 		initInitialArmies();
 		
-		int firstAttacker = (int) (2*Math.random());
-		int firstDefender = firstAttacker+1%2;
+		int atkArmy = (int) (2*Math.random());
+		int defArmy = atkArmy+1%2;
+		while (true) {
+			performRound(atkArmy, defArmy);
+			defArmy = atkArmy;
+			atkArmy = defArmy+1%2;
+		}
+	}
+	
+	private void performRound(int atkArmy, int defArmy) {
+		int atkGroup = selectAttackGroup(atkArmy);
+		int atkUnit = (int) (armies[atkArmy][atkGroup].size()*Math.random());
 		
-		int attackGroupIndex = selectAttackGroup(firstAttacker);
-		int attackUnitIndex = (int) (armies[firstAttacker][attackGroupIndex].size()*Math.random());
+		int defGroup = selectDefenseGroup(defArmy);
+		int defUnit = (int) (armies[defArmy][defGroup].size()*Math.random());
 		
-		int defenseGroupIndex = selectDefenseGroup(firstDefender);
-		int defenseUnitIndex = (int) (armies[firstDefender][defenseGroupIndex].size()*Math.random());
+		int damage = armies[atkArmy][atkGroup].get(atkUnit).attack();
+		armies[defArmy][defGroup].get(defUnit).takeDamage(damage);
 	}
 	
 	private void initInitialArmies() {
@@ -44,9 +54,9 @@ public class Battle implements Variables{
 		}
 	}
 	
-	private int selectAttackGroup(int attackingArmyIndex) {
+	private int selectAttackGroup(int atkArmy) {
 		int[] chanceArray;
-		if (attackingArmyIndex == 0) {
+		if (atkArmy == 0) {
 			chanceArray = CHANCE_ATTACK_PLANET_UNITS;
 		} else {
 			chanceArray = CHANCE_ATTACK_ENEMY_UNITS;
@@ -54,8 +64,8 @@ public class Battle implements Variables{
 		return selectGroup(chanceArray);
 	}
 	
-	private int selectDefenseGroup(int defendingArmyIndex) {
-		ArrayList[] army = armies[defendingArmyIndex];
+	private int selectDefenseGroup(int defArmy) {
+		ArrayList[] army = armies[defArmy];
 		
 		int[] chanceArray = new int[army.length];
 		for (int i = 0; i < army.length; i++) {
