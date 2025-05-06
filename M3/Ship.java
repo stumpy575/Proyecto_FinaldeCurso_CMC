@@ -1,34 +1,135 @@
 package proyectoFinal;
 
-abstract public class Ship implements MilitaryUnit, Variables {
-	private int armor;
-	private int initialArmor;
-	private int baseDamage;
+public abstract class Ship implements Variables, MilitaryUnit{
+	int armor;
+	int initialArmor;
+	int baseDamage;
+}
+
+public class LightHunter extends Ship{
 	
-	public Ship(int armor, int initialArmor, int baseDamage) {
+	public LightHunter(int armor, int baseDamage) {
 		super();
-		this.armor = armor;
-		this.initialArmor = initialArmor;
-		this.baseDamage = baseDamage;
+		armor=Ship.ARMOR_LIGTHHUNTER+(tecnologiadefensa*Ship.PLUS_ARMOR_LIGTHHUNTER_BY_TECHNOLOGY/Ship.ARMOR_LIGTHHUNTER);
+		baseDamage=Ship.BASE_DAMAGE_LIGTHHUNTER+(tecnologiaataque*Ship.PLUS_ATTACK_LIGTHHUNTER_BY_TECHNOLOGY/Ship.BASE_DAMAGE_LIGTHHUNTER);
 	}
-	
-	public int getArmor() {
-		return armor;
+	public LightHunter() {
+		armor=Ship.ARMOR_LIGTHHUNTER;
+		baseDamage=Ship.BASE_DAMAGE_LIGTHHUNTER;
+		
 	}
-	public void setArmor(int armor) {
-		this.armor = armor;
-	}
-	public int getInitialArmor() {
-		return initialArmor;
-	}
-	public void setInitialArmor(int initialArmor) {
-		this.initialArmor = initialArmor;
-	}
-	public int getBaseDamage() {
+
+	@Override
+	public int attack() {
+		// TODO Auto-generated method stub
 		return baseDamage;
 	}
-	public void setBaseDamage(int baseDamage) {
-		this.baseDamage = baseDamage;
+
+	@Override
+	public void takeDamage(int receivedDamage) {
+		armor-=receivedDamage;
+		
 	}
+
+	@Override
+	public int getActualArmor() {
+		// TODO Auto-generated method stub
+		return armor;
+	}
+
+	@Override
+	public int getMetalCost() {
+		// TODO Auto-generated method stub
+		return Ship.METAL_COST_LIGTHHUNTER;
+	}
+
+	@Override
+	public int getDeuteriumCost() {
+		// TODO Auto-generated method stub
+		return Ship.DEUTERIUM_COST_LIGTHHUNTER;
+	}
+
+	@Override
+	public int getChanceGeneratingWaste() {
+		// TODO Auto-generated method stub
+		return Ship.CHANCE_GENERATNG_WASTE_LIGTHHUNTER;
+	}
+
+	@Override
+	public int getChangeAttackAgain() {
+		// TODO Auto-generated method stub
+		return Ship.CHANCE_ATTACK_AGAIN_LIGTHHUNTER;
+	}
+
+	@Override
+	public void resetArmor() {
+		armor=initialArmor;
+		
+	}
+	
+	
+}
+
+public class HeavyHunter extends Ship{
+	
+	public HeavyHunter(int armor, int baseDamage) {
+		super();
+		armor=Ship.ARMOR_HEAVYHUNTER+(tecnologiadefensa*Ship.PLUS_ARMOR_HEAVYHUNTER_BY_TECHNOLOGY/Ship.ARMOR_HEAVYHUNTER);
+		baseDamage=Ship.BASE_DAMAGE_HEAVYHUNTER+(tecnologiaataque*Ship.PLUS_ATTACK_HEAVYHUNTER_BY_TECHNOLOGY/Ship.BASE_DAMAGE_HEAVYHUNTER);
+	}
+	public HeavyHunter() {
+		armor=Ship.ARMOR_HEAVYHUNTER;
+		baseDamage=Ship.BASE_DAMAGE_HEAVYHUNTER;
+		
+	}
+
+	@Override
+	public int attack() {
+		// TODO Auto-generated method stub
+		return baseDamage;
+	}
+
+	@Override
+	public void takeDamage(int receivedDamage) {
+		armor-=receivedDamage;
+		
+	}
+
+	@Override
+	public int getActualArmor() {
+		// TODO Auto-generated method stub
+		return armor;
+	}
+
+	@Override
+	public int getMetalCost() {
+		// TODO Auto-generated method stub
+		return Ship.METAL_COST_HEAVYHUNTER;
+	}
+
+	@Override
+	public int getDeuteriumCost() {
+		// TODO Auto-generated method stub
+		return Ship.DEUTERIUM_COST_HEAVYHUNTER;
+	}
+
+	@Override
+	public int getChanceGeneratingWaste() {
+		// TODO Auto-generated method stub
+		return Ship.CHANCE_GENERATNG_WASTE_HEAVYHUNTER;
+	}
+
+	@Override
+	public int getChangeAttackAgain() {
+		// TODO Auto-generated method stub
+		return Ship.CHANCE_ATTACK_AGAIN_HEAVYHUNTER;
+	}
+
+	@Override
+	public void resetArmor() {
+		armor=initialArmor;
+		
+	}
+	
 	
 }
