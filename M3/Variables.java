@@ -121,4 +121,7 @@ public interface Variables {
 	
 	// percentage of waste that will be generated with respect to the cost of the units
 	public final int PERCENTATGE_WASTE = 70;
+	
+	// percentage of units in at least one army for battle to continue
+	public final int PERCENTAGE_UNITS_BATTLE_END_THRESHOLD = 20;
 }
