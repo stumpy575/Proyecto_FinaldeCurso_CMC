@@ -258,4 +258,8 @@ public class Battle implements Variables{
 	public String getBattleDevelopmentLog() {
 		return battleDevelopmentLog;
 	}
+
+	public ArrayList<MilitaryUnit>[] getPlanetArmy() {
+		return planetArmy;
+	}
 }
