@@ -250,4 +250,12 @@ public class Battle implements Variables{
 	public int[] getWasteMetalDeuterium() {
 		return wasteMetalDeuterium;
 	}
+
+	public String getBattleStatistics() {
+		return battleStatistics;
+	}
+
+	public String getBattleDevelopmentLog() {
+		return battleDevelopmentLog;
+	}
 }
