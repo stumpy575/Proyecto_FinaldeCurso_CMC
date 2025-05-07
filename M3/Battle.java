@@ -19,6 +19,7 @@ public class Battle implements Variables{
 	private int[] enemyDrops, planetDrops;
 	private int[][] resourcesLosses;
 	
+	private String battleStatistics;
 	private String battleDevelopment;
 	
 	public Battle(ArrayList<MilitaryUnit>[] planetArmy, ArrayList<MilitaryUnit>[] enemyArmy) {
@@ -38,12 +39,12 @@ public class Battle implements Variables{
 		this.planetDrops = new int[7];
 		this.enemyDrops = new int[7];
 		
-		
+		this.battleStatistics = "";
 		this.battleDevelopment = "";
 	}
 	
-	// Returns wasteMetalDeuterium if battle is won by Planet
-	public int[] performBattle() {
+	// Returns whether battle is won by Planet
+	public boolean performBattle() {
 		initInitialArmies();
 		
 		int atkArmy = (int) (2*Math.random());
@@ -55,10 +56,12 @@ public class Battle implements Variables{
 		}
 		
 		int winningSide = calculateWinner();
+		generateBattleStatistics(winningSide);
+		generateBattleReport();
 		if (winningSide == 0) {
-			return wasteMetalDeuterium;
+			return true;
 		} 
-		return null;
+		return false;
 	}
 	
 	private void initInitialArmies() {
@@ -191,6 +194,54 @@ public class Battle implements Variables{
 			return true;
 		}
 		return false;
+	}
+	
+	private void generateBattleStatistics(int winningSide) {
+		battleStatistics += "BATTLE STATISTICS";
+		
+		final String armyTableFormat = "%-20s%10s%10s%-20s%10s%10s";
+		battleStatistics += String.format(armyTableFormat, "Planet Army", "Units", "Drops", "Enemy Army", "Units", "Drops")+"\n\n";
+		for (int i = 0; i<armies[0].length; i++) {
+			if (i < 4) {
+				battleStatistics += String.format(armyTableFormat, UNIT_NAMES[i], Integer.toString(initialNumberUnitsPlanet[i]), Integer.toString(planetDrops[i]), UNIT_NAMES[i], Integer.toString(initialNumberUnitsEnemy[i]), Integer.toString(enemyDrops[i]))+"\n\n";
+			} else {
+				battleStatistics += String.format(armyTableFormat, UNIT_NAMES[i], Integer.toString(initialNumberUnitsPlanet[i]), Integer.toString(planetDrops[i]), "", "", "")+"\n\n";
+			}	
+		}
+		battleStatistics += "\n";
+		
+		final String resourcesHeaderFormat = "%-40s%-40s";
+		final String resourcesRowFormat = "%-10s%10d" + " ".repeat(20) + "%-10s%10d";
+		
+		battleStatistics += "*".repeat(80)+"\n";
+		battleStatistics += String.format(resourcesHeaderFormat, "Planet Army Cost", "Enemy Army Cost")+"\n";
+		battleStatistics += String.format(resourcesRowFormat, "Metal:", initialCostFleet[0][0], "Metal:", initialCostFleet[1][0])+"\n";
+		battleStatistics += String.format(resourcesRowFormat, "Deuterium:", initialCostFleet[0][1], "Deuterium:", initialCostFleet[1][1])+"\n";
+		battleStatistics += "\n";
+		
+		battleStatistics += "*".repeat(80)+"\n";
+		battleStatistics += String.format(resourcesHeaderFormat, "Planet Army Losses", "Enemy Army Losses")+"\n";
+		battleStatistics += String.format(resourcesRowFormat, "Metal:", resourcesLosses[0][0], "Metal:", resourcesLosses[1][0])+"\n";
+		battleStatistics += String.format(resourcesRowFormat, "Deuterium:", resourcesLosses[0][1], "Deuterium:", resourcesLosses[1][1])+"\n";
+		battleStatistics += String.format(resourcesRowFormat, "Weighted:", resourcesLosses[0][2], "Metal:", resourcesLosses[1][2])+"\n";
+		battleStatistics += "\n";
+		
+		battleStatistics += "*".repeat(80)+"\n";
+		battleStatistics += "Waste Generated:\n";
+		battleStatistics += String.format(resourcesRowFormat, "Metal:", wasteMetalDeuterium[0], "", "");
+		battleStatistics += String.format(resourcesRowFormat, "Metal:", wasteMetalDeuterium[1], "", "");
+		battleStatistics += "\n";
+		
+		if (winningSide == 0) {
+			battleStatistics += "Battle Won By Planet, We Collect Rubble";
+		} else {
+			battleStatistics += "Battle Won By Enemy, We Don't Collect Rubble";
+		}
+	}
+	
+	
+	private void generateBattleReport() {
+		
 	}
 
 	public int[] getWasteMetalDeuterium() {

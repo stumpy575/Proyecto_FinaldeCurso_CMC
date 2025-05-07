@@ -136,4 +136,7 @@ public interface Variables {
 	
 	// percentage of units in at least one army for battle to continue
 	public final int PERCENTAGE_UNITS_BATTLE_END_THRESHOLD = 20;
+	
+	// array of unit names (used for battle statistics and report)
+	public final String[] UNIT_NAMES = {"Light Hunter","Heavy Hunter","Battleship","Armored Ship","Missile Launcher","Ion Cannon","Plasma Cannon"};
 }
