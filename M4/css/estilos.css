@@ -18,12 +18,33 @@ main, h1, h2, p, ol {
     padding: 0 1rem;
 }
 
+h1 {
+    text-align: center;
+    color: #00ffff;
+    text-decoration: underline;
+}
+
 /* Sticky Menu */
 header.sticky {
     position: sticky;
     top: 0;
     background-color: #1f1f1f;
     z-index: 1000;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header.sticky .logo {
+    height: 50px;
+    cursor: pointer;
+}
+
+nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
 }
 
 nav ul {
@@ -32,8 +53,7 @@ nav ul {
     justify-content: center;
     flex-wrap: wrap;
     margin: 0;
-    padding: 1rem;
-    background-color: #1f1f1f;
+    padding: 0;
 }
 
 nav ul li {
@@ -99,6 +119,78 @@ button:hover {
     background-color: #005fcc;
 }
 
+/* Video Introductorio */
+.video-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem auto;
+    width: 100%;
+}
+
+.intro-video {
+    width: 80%;
+    max-width: 800px;
+    border: 3px solid #00ffff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #00ffff;
+    animation: flotar 3s ease-in-out infinite;
+}
+
+.mensaje {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+}
+
+/* Lista tutorial con imágenes alternas */
+.tutorial-list {
+    list-style: none;
+    padding: 0;
+    margin: 2rem auto;
+    max-width: 900px;
+}
+
+.tutorial-list li {
+    margin: 2rem 0;
+    padding: 1rem;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.tutorial-list li img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.tutorial-list li.left {
+    flex-direction: row;
+    text-align: left;
+}
+
+.tutorial-list li.right {
+    flex-direction: row-reverse;
+    text-align: right;
+}
+
+.tutorial-list li.center {
+    flex-direction: column;
+    text-align: center;
+}
+
+.tutorial-list li.center img {
+    margin: 1rem auto 0 auto;
+}
+
+.tutorial-list li:hover {
+    transform: translateY(-10px);
+}
+
 /* Responsive: móviles y tablets */
 @media screen and (max-width: 1024px) {
     nav ul {
@@ -121,5 +213,18 @@ button:hover {
     iframe {
         width: 95% !important;
         height: auto !important;
+    }
+
+    .intro-video {
+        width: 95%;
+    }
+
+    .tutorial-list li {
+        flex-direction: column !important;
+        text-align: center !important;
+    }
+
+    .tutorial-list li img {
+        margin: 1rem auto 0 auto;
     }
 }
