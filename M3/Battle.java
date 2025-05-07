@@ -7,36 +7,109 @@ public class Battle implements Variables{
 	private ArrayList<MilitaryUnit>[] planetArmy;
 	private ArrayList<MilitaryUnit>[] enemyArmy;
 	private ArrayList<MilitaryUnit>[][] armies;
-	private String battleDevelopment;
+	
+	private int[] initialNumberUnitsPlanet, initialNumberUnitsEnemy;
+	private int initialSumUnitsPlanet, initialSumUnitsEnemy;
 	private int [][] initialCostFleet;
-	private int initialNumberUnitsPlanet, initialNumberUnitsEnemy;
-	private int currentNumberUnitsPlanet, currentNumberUnitsEnemy;
+	
+	private int[] currentNumberUnitsPlanet, currentNumberUnitsEnemy;
+	private int currentSumUnitsPlanet, currentSumUnitsEnemy;
+	
 	private int[] wasteMetalDeuterium;
 	private int[] enemyDrops, planetDrops;
 	private int[][] resourcesLosses;
+	
+	private String battleDevelopment;
+	
 	public Battle(ArrayList<MilitaryUnit>[] planetArmy, ArrayList<MilitaryUnit>[] enemyArmy) {
 		super();
 		this.planetArmy = planetArmy;
 		this.enemyArmy = enemyArmy;
-		this.battleDevelopment = "";
+		this.armies = new ArrayList[2][7];
+		
+		this.initialNumberUnitsPlanet = new int[7];
+		this.initialNumberUnitsEnemy = new int[4];
+		this.initialSumUnitsPlanet = 0;
+		this.initialSumUnitsEnemy = 0;
+		this.initialCostFleet = new int[2][2];
+		
 		this.wasteMetalDeuterium = new int[2];
+		this.resourcesLosses = new int[2][3];
+		this.planetDrops = new int[7];
+		this.enemyDrops = new int[7];
+		
+		
+		this.battleDevelopment = "";
 	}
 	
-	
-	
-	public void performBattle() {
+	// Returns wasteMetalDeuterium if battle is won by Planet
+	public int[] performBattle() {
 		initInitialArmies();
 		
 		int atkArmy = (int) (2*Math.random());
 		int defArmy = atkArmy+1%2;
-		while ((currentNumberUnitsPlanet/initialNumberUnitsPlanet >= PERCENTAGE_UNITS_BATTLE_END_THRESHOLD &&
-			currentNumberUnitsEnemy/initialNumberUnitsEnemy >= PERCENTAGE_UNITS_BATTLE_END_THRESHOLD)
-			|| currentNumberUnitsPlanet == 0 
-			|| currentNumberUnitsEnemy == 0) {
+		while (!doesBattleEnd()) {
 			performTurn(atkArmy, defArmy);
 			defArmy = atkArmy;
 			atkArmy = defArmy+1%2;
 		}
+		
+		int winningSide = calculateWinner();
+		if (winningSide == 0) {
+			return wasteMetalDeuterium;
+		} 
+		return null;
+	}
+	
+	private void initInitialArmies() {
+		for (int i = 0; i < planetArmy.length; i++) {
+			armies[0][i] = planetArmy[i];
+			initialNumberUnitsPlanet[i] = planetArmy[i].size();
+			initialSumUnitsPlanet += planetArmy[i].size();
+			initialCostFleet[0][0] = METAL_COST_UNITS[i]*planetArmy[i].size();
+			initialCostFleet[0][1] = DEUTERIUM_COST_UNITS[i]*planetArmy[i].size();
+		}
+		for (int i = 0; i < enemyArmy.length; i++) {
+			armies[1][i] = enemyArmy[i];
+			initialNumberUnitsEnemy[i] = enemyArmy[i].size();
+			initialSumUnitsEnemy += enemyArmy[i].size();
+			initialCostFleet[1][0] = METAL_COST_UNITS[i]*planetArmy[i].size();
+			initialCostFleet[1][1] = DEUTERIUM_COST_UNITS[i]*planetArmy[i].size();
+		}
+		this.currentNumberUnitsPlanet = initialNumberUnitsPlanet;
+		this.currentNumberUnitsEnemy = initialNumberUnitsEnemy;
+		this.currentSumUnitsPlanet = initialSumUnitsPlanet;
+		this.currentSumUnitsEnemy = initialSumUnitsEnemy;
+	}
+	
+	private boolean doesBattleEnd() {
+		if (currentSumUnitsPlanet/initialSumUnitsPlanet >= PERCENTAGE_UNITS_BATTLE_END_THRESHOLD ||
+			currentSumUnitsEnemy/initialSumUnitsEnemy >= PERCENTAGE_UNITS_BATTLE_END_THRESHOLD) {
+			return false;
+		}
+		return true;
+	}
+	
+	private int calculateWinner() {
+		calculateResourcesLost();
+		if (resourcesLosses[0][2] < resourcesLosses[1][2]) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+	
+	private void calculateResourcesLost() {
+		for (int i = 0; i < planetDrops.length; i++) {
+			resourcesLosses[0][0] += planetDrops[i]*METAL_COST_UNITS[i];
+			resourcesLosses[0][1] += planetDrops[i]*DEUTERIUM_COST_UNITS[i];
+		}
+		for (int i = 0; i < enemyDrops.length; i++) {
+			resourcesLosses[1][0] += enemyDrops[i]*METAL_COST_UNITS[i];
+			resourcesLosses[2][1] += enemyDrops[i]*DEUTERIUM_COST_UNITS[i];
+		}
+		resourcesLosses[0][2] = resourcesLosses[0][0] + resourcesLosses[0][1]*5;
+		resourcesLosses[1][2] = resourcesLosses[1][0] + resourcesLosses[1][1]*5;
 	}
 	
 	private void performTurn(int atkArmy, int defArmy) {
@@ -53,28 +126,16 @@ public class Battle implements Variables{
 				generateWaste(defGroup);
 				armies[defArmy][defGroup].remove(defUnit);
 				if (defArmy == 0) {
-					currentNumberUnitsPlanet -= 1;
+					currentNumberUnitsPlanet[defGroup] -= 1;
+					currentSumUnitsPlanet -= 1;
+					planetDrops[defGroup] += 1;
 				} else {
-					currentNumberUnitsEnemy -= 1;
+					currentNumberUnitsEnemy[defGroup] -= 1;
+					currentSumUnitsEnemy -= 1;
+					enemyDrops[defGroup] += 1;
 				}
 			}
 		} while(doesUnitAttackAgain(atkGroup));
-	}
-
-	private void initInitialArmies() {
-		this.armies = new ArrayList[2][7];
-		this.initialNumberUnitsPlanet = 0;
-		this.initialNumberUnitsEnemy = 0;
-		for (int i = 0; i < planetArmy.length; i++) {
-			armies[0][i] = planetArmy[i];
-			initialNumberUnitsPlanet += planetArmy[i].size();
-		}
-		for (int i = 0; i < enemyArmy.length; i++) {
-			armies[1][i] = enemyArmy[i];
-			initialNumberUnitsEnemy += enemyArmy[i].size();
-		}
-		this.currentNumberUnitsPlanet = initialNumberUnitsPlanet;
-		this.currentNumberUnitsEnemy = initialNumberUnitsEnemy;
 	}
 	
 	private int selectRandomAttackGroup(int atkArmy) {
@@ -113,46 +174,9 @@ public class Battle implements Variables{
 	}
 	
 	private void generateWaste(int defGroup) {
-		int chance = 0;
-		int metalWaste = 0;
-		int deuteriumWaste = 0;
-		switch (defGroup) {
-		case 0:
-			chance = CHANCE_GENERATNG_WASTE_LIGTHHUNTER;
-			metalWaste = METAL_COST_LIGTHHUNTER * PERCENTATGE_WASTE;
-			deuteriumWaste = DEUTERIUM_COST_LIGTHHUNTER * PERCENTATGE_WASTE;
-			break;
-		case 1:
-			chance = CHANCE_GENERATNG_WASTE_HEAVYHUNTER;
-			metalWaste = METAL_COST_HEAVYHUNTER * PERCENTATGE_WASTE;
-			deuteriumWaste = DEUTERIUM_COST_HEAVYHUNTER * PERCENTATGE_WASTE;
-			break;
-		case 2:
-			chance = CHANCE_GENERATNG_WASTE_BATTLESHIP;
-			metalWaste = METAL_COST_BATTLESHIP * PERCENTATGE_WASTE;
-			deuteriumWaste = DEUTERIUM_COST_BATTLESHIP * PERCENTATGE_WASTE;
-			break;
-		case 3:
-			chance = CHANCE_GENERATNG_WASTE_ARMOREDSHIP;
-			metalWaste = METAL_COST_ARMOREDSHIP * PERCENTATGE_WASTE;
-			deuteriumWaste = DEUTERIUM_COST_ARMOREDSHIP * PERCENTATGE_WASTE;
-			break;
-		case 4:
-			chance = CHANCE_GENERATNG_WASTE_MISSILELAUNCHER;
-			metalWaste = METAL_COST_MISSILELAUNCHER * PERCENTATGE_WASTE;
-			deuteriumWaste = DEUTERIUM_COST_MISSILELAUNCHER * PERCENTATGE_WASTE;
-			break;
-		case 5:
-			chance = CHANCE_GENERATNG_WASTE_IONCANNON;
-			metalWaste = METAL_COST_IONCANNON * PERCENTATGE_WASTE;
-			deuteriumWaste = DEUTERIUM_COST_IONCANNON * PERCENTATGE_WASTE;
-			break;
-		case 6:
-			chance = CHANCE_GENERATNG_WASTE_PLASMACANNON;
-			metalWaste = METAL_COST_PLASMACANNON * PERCENTATGE_WASTE;
-			deuteriumWaste = DEUTERIUM_COST_PLASMACANNON * PERCENTATGE_WASTE;
-			break;
-		}
+		int chance = CHANCE_GENERATING_WASTE_UNITS[defGroup];
+		int metalWaste = METAL_COST_UNITS[defGroup]*PERCENTATGE_WASTE;
+		int deuteriumWaste = DEUTERIUM_COST_UNITS[defGroup]*PERCENTATGE_WASTE;
 		int randomNum = (int) (100*Math.random());
 		if (randomNum < chance) {
 			wasteMetalDeuterium[0] += metalWaste;
@@ -161,34 +185,15 @@ public class Battle implements Variables{
 	}
 	
 	private boolean doesUnitAttackAgain(int atkGroup) {
-		int chance = 0;
-		switch (atkGroup) {
-		case 0:
-			chance = CHANCE_ATTACK_AGAIN_LIGTHHUNTER;
-			break;
-		case 1:
-			chance = CHANCE_ATTACK_AGAIN_HEAVYHUNTER;
-			break;
-		case 2:
-			chance = CHANCE_ATTACK_AGAIN_BATTLESHIP;
-			break;
-		case 3:
-			chance = CHANCE_ATTACK_AGAIN_ARMOREDSHIP;
-			break;
-		case 4:
-			chance = CHANCE_ATTACK_AGAIN_MISSILELAUNCHER;
-			break;
-		case 5:
-			chance = CHANCE_ATTACK_AGAIN_IONCANNON;
-			break;
-		case 6:
-			chance = CHANCE_ATTACK_AGAIN_PLASMACANNON;
-			break;
-		}
+		int chance = CHANCE_ATTACK_AGAIN_UNITS[atkGroup];
 		int randomNum = (int) (100*Math.random());
 		if (randomNum < chance) {
 			return true;
 		}
 		return false;
+	}
+
+	public int[] getWasteMetalDeuterium() {
+		return wasteMetalDeuterium;
 	}
 }
