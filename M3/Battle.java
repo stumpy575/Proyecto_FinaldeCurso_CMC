@@ -58,13 +58,11 @@ public class Battle implements Variables{
 		
 		int winningSide = calculateWinner();
 		generateBattleStatistics(winningSide);
-		
-		planetArmy = armies[0];
 		if (winningSide == 0) {
 			return true;
 		} 
 		return false;
-	} 
+	}
 	
 	private void initInitialArmies() {
 		for (int i = 0; i < planetArmy.length; i++) {
@@ -259,9 +257,5 @@ public class Battle implements Variables{
 
 	public String getBattleDevelopmentLog() {
 		return battleDevelopmentLog;
-	}
-
-	public ArrayList<MilitaryUnit>[] getPlanetArmy() {
-		return planetArmy;
 	}
 }
