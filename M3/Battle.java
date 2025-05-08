@@ -1,7 +1,6 @@
 package proyectoFinal;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Battle implements Variables{
 	private ArrayList<MilitaryUnit>[] planetArmy;
