@@ -2,26 +2,23 @@ package proyectoFinal;
 
 import java.util.ArrayList;
 
-public class Planet {
+public class Planet implements Variables {
 	private int technologyDefense;
-	private int technologyAtack;
+	private int technologyAttack;
 	private int metal;
 	private int deuterium;
 	private int upgradeDefenseTechnologyDeuteriumCost;
 	private int upgradeAttackTechnologyDeuteriumCost;
 	ArrayList<MilitaryUnit>[] army ;
 	
-	
-	
-	public Planet(int technologyDefense, int technologyAtack, int metal, int deuterium,
-			int upgradeDefenseTechnologyDeuteriumCost, int upgradeAttackTechnologyDeuteriumCost) {
+	public Planet(int technologyDefense, int technologyAtack, int metal, int deuterium) {
 		super();
 		this.technologyDefense = technologyDefense;
-		this.technologyAtack = technologyAtack;
+		this.technologyAttack = technologyAtack;
 		this.metal = metal;
 		this.deuterium = deuterium;
-		this.upgradeDefenseTechnologyDeuteriumCost = upgradeDefenseTechnologyDeuteriumCost;
-		this.upgradeAttackTechnologyDeuteriumCost = upgradeAttackTechnologyDeuteriumCost;
+		this.upgradeDefenseTechnologyDeuteriumCost = UPGRADE_BASE_DEFENSE_TECHNOLOGY_DEUTERIUM_COST;
+		this.upgradeAttackTechnologyDeuteriumCost = UPGRADE_BASE_ATTACK_TECHNOLOGY_DEUTERIUM_COST;
 		this.army = new ArrayList[7];
 	}
 	
@@ -32,10 +29,10 @@ public class Planet {
 		this.technologyDefense = technologyDefense;
 	}
 	public int getTechnologyAtack() {
-		return technologyAtack;
+		return technologyAttack;
 	}
 	public void setTechnologyAtack(int technologyAtack) {
-		this.technologyAtack = technologyAtack;
+		this.technologyAttack = technologyAtack;
 	}
 	public int getMetal() {
 		return metal;
@@ -68,42 +65,123 @@ public class Planet {
 		this.army = army;
 	}
 	
-	 void newLightHunter(int n) {
-		 for (int i = 0; i<n; i++) {
-			 army[0].add((MilitaryUnit) new LightHunter()); 
-		 }
-	 }
-	 void newHeavyHunter(int n) {
-		 for (int i = 0; i<n; i++) {
-			 army[1].add((MilitaryUnit) new HeavyHunter()); 
-		 }
-	 }
-	 void newBattleShip(int n) {
-		 for (int i = 0; i<n; i++) {
-			 army[2].add((MilitaryUnit) new BattleShip()); 
-		 }
-	 }
-	 void newArmoredShip(int n) {
-		 for (int i = 0; i<n; i++) {
-			 army[3].add((MilitaryUnit) new ArmoredShip()); 
-		 }
-	 }
-	 void newMissileLauncher(int n) {
-		 for (int i = 0; i<n; i++) {
-			 army[4].add((MilitaryUnit) new MissileLauncher()); 
-		 }
-	 }
-	 void newIonCannon(int n) {
-		 for (int i = 0; i<n; i++) {
-			 army[5].add((MilitaryUnit) new IonCannon()); 
-		 }
-	 }
-	 void newPlasmaCannon(int n) {
-		 for (int i = 0; i<n; i++) {
-			 army[1].add((MilitaryUnit) new PlasmaCannon()); 
-		 }
-	 }
-	 Void printStats() {
-		 //hay que hacer el metodo
-	 }
+	void upgradeTechnologyDefense() throws ResourceException {
+		if (deuterium < upgradeDefenseTechnologyDeuteriumCost) {
+			throw new ResourceException("[!] Not enough deuterium to upgrade!");
+		} else {
+			deuterium -= upgradeDefenseTechnologyDeuteriumCost;
+			technologyDefense += 1;
+			upgradeDefenseTechnologyDeuteriumCost = (int) (upgradeDefenseTechnologyDeuteriumCost*(100+UPGRADE_PLUS_DEFENSE_TECHNOLOGY_DEUTERIUM_COST)/100);
+		}
+	}
+	
+	void upgradeTechnologyAttack() throws ResourceException {
+		if (deuterium < upgradeAttackTechnologyDeuteriumCost) {
+			throw new ResourceException("[!] Not enough deuterium to upgrade!");
+		} else {
+			deuterium -= upgradeAttackTechnologyDeuteriumCost;
+			technologyAttack += 1;
+			upgradeAttackTechnologyDeuteriumCost = (int) (upgradeAttackTechnologyDeuteriumCost*(100+UPGRADE_PLUS_ATTACK_TECHNOLOGY_DEUTERIUM_COST)/100);
+		}
+	}
+	
+	private void checkEnoughResourcesToBuild(int n, int unitType) throws ResourceException {
+		final int metal_cost = METAL_COST_UNITS[unitType];
+		final int deuterium_cost = DEUTERIUM_COST_UNITS[unitType];
+		if (metal<metal_cost*n || deuterium<deuterium_cost*n) {
+			final int n_possible_metal = (int) (metal/metal_cost);
+			final int n_possible_deuterium = (int) (deuterium/deuterium_cost);
+			if (n_possible_metal < n_possible_deuterium) {
+				n = n_possible_metal;
+			} else {
+				n = n_possible_deuterium;
+			}
+			if (n == 0) {
+				throw new ResourceException("[!] Not enough resources for any "+UNIT_NAMES[unitType]+"s.");
+			} else {
+				throw new ResourceException("[!] Not enough resources. Only "+n+" "+UNIT_NAMES[unitType]+"s will be built.");
+			}
+		}
+	}
+	
+	void addMilitaryUnit(int unitType, int armor, int attack) {
+		switch (unitType) {
+		case 0:
+			army[0].add((MilitaryUnit) new LightHunter(armor, attack));
+			break;
+		case 1:
+			army[1].add((MilitaryUnit) new HeavyHunter(armor, attack));
+			break;
+		case 2:
+			army[2].add((MilitaryUnit) new Battleship(armor, attack));
+			break;
+		case 3:
+			army[3].add((MilitaryUnit) new ArmoredShip(armor, attack));
+			break;
+		case 4:
+			army[4].add((MilitaryUnit) new MissileLauncher(armor, attack));
+			break;
+		case 5:
+			army[5].add((MilitaryUnit) new IonCannon(armor, attack));
+			break;
+		case 6:
+			army[6].add((MilitaryUnit) new PlasmaCannon(armor, attack));
+			break;
+		}
+		
+	}
+	
+	void newMilitaryUnit(int n, int unitType) {
+		try {
+			checkEnoughResourcesToBuild(n, 0);
+		} catch (ResourceException e) {
+			final int n_possible_metal = (int) (metal/METAL_COST_UNITS[unitType]);
+			final int n_possible_deuterium = (int) (deuterium/DEUTERIUM_COST_UNITS[unitType]);
+			if (n_possible_metal < n_possible_deuterium) {
+				n = n_possible_metal;
+			} else {
+				n = n_possible_deuterium;
+			}
+			e.printStackTrace();
+		}
+		for (int i = 0; i<n; i++) {
+			final int armor = (int) (ARMOR_UNITS[unitType]*(100+technologyDefense*PLUS_ARMOR_UNITS_BY_TECHNOLOGY[unitType])/100);
+			final int attack = (int) (BASE_DAMAGE_UNITS[unitType]*(100+technologyAttack*PLUS_ATTACK_UNITS_BY_TECHNOLOGY[unitType])/100);
+			addMilitaryUnit(unitType, armor, attack);
+			metal -= METAL_COST_UNITS[unitType]*n;
+			deuterium -= DEUTERIUM_COST_UNITS[unitType]*n;
+		}
+	}
+	
+	void newLightHunter(int n) {
+		newMilitaryUnit(n, 0);
+	}
+	
+	void newHeavyHunter(int n) {
+		newMilitaryUnit(n, 1);
+	}
+	
+	void newBattleship(int n) {
+		newMilitaryUnit(n, 2);
+	}
+	
+	void newArmoredShip(int n) {
+		newMilitaryUnit(n, 3);
+	}
+	
+	void newMissileLauncher(int n) {
+		newMilitaryUnit(n, 4);
+	}
+	
+	void newIonCannon(int n) {
+		newMilitaryUnit(n, 5);
+	}
+	
+	void newPlasmaCannon(int n) {
+		newMilitaryUnit(n, 6);
+	}
+	
+	void printStats() {
+		//hay que hacer el metodo
+	}
 }
