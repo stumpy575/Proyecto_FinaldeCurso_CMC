@@ -9,7 +9,7 @@ public class Planet implements Variables {
 	private int deuterium;
 	private int upgradeDefenseTechnologyDeuteriumCost;
 	private int upgradeAttackTechnologyDeuteriumCost;
-	ArrayList<MilitaryUnit>[] army ;
+	private ArrayList<MilitaryUnit>[] army;
 	
 	public Planet(int technologyDefense, int technologyAtack, int metal, int deuterium) {
 		super();
@@ -65,7 +65,7 @@ public class Planet implements Variables {
 		this.army = army;
 	}
 	
-	void upgradeTechnologyDefense() throws ResourceException {
+	public void upgradeTechnologyDefense() throws ResourceException {
 		if (deuterium < upgradeDefenseTechnologyDeuteriumCost) {
 			throw new ResourceException("[!] Not enough deuterium to upgrade!");
 		} else {
@@ -75,7 +75,7 @@ public class Planet implements Variables {
 		}
 	}
 	
-	void upgradeTechnologyAttack() throws ResourceException {
+	public void upgradeTechnologyAttack() throws ResourceException {
 		if (deuterium < upgradeAttackTechnologyDeuteriumCost) {
 			throw new ResourceException("[!] Not enough deuterium to upgrade!");
 		} else {
@@ -104,7 +104,7 @@ public class Planet implements Variables {
 		}
 	}
 	
-	void addMilitaryUnit(int unitType, int armor, int attack) {
+	private void addMilitaryUnit(int unitType, int armor, int attack) {
 		switch (unitType) {
 		case 0:
 			army[0].add((MilitaryUnit) new LightHunter(armor, attack));
@@ -131,7 +131,7 @@ public class Planet implements Variables {
 		
 	}
 	
-	void newMilitaryUnit(int n, int unitType) {
+	private void newMilitaryUnit(int n, int unitType) {
 		try {
 			checkEnoughResourcesToBuild(n, 0);
 		} catch (ResourceException e) {
@@ -153,35 +153,35 @@ public class Planet implements Variables {
 		}
 	}
 	
-	void newLightHunter(int n) {
+	public void newLightHunter(int n) {
 		newMilitaryUnit(n, 0);
 	}
 	
-	void newHeavyHunter(int n) {
+	public void newHeavyHunter(int n) {
 		newMilitaryUnit(n, 1);
 	}
 	
-	void newBattleship(int n) {
+	public void newBattleship(int n) {
 		newMilitaryUnit(n, 2);
 	}
 	
-	void newArmoredShip(int n) {
+	public void newArmoredShip(int n) {
 		newMilitaryUnit(n, 3);
 	}
 	
-	void newMissileLauncher(int n) {
+	public void newMissileLauncher(int n) {
 		newMilitaryUnit(n, 4);
 	}
 	
-	void newIonCannon(int n) {
+	public void newIonCannon(int n) {
 		newMilitaryUnit(n, 5);
 	}
 	
-	void newPlasmaCannon(int n) {
+	public void newPlasmaCannon(int n) {
 		newMilitaryUnit(n, 6);
 	}
 	
-	void printStats() {
+	public void printStats() {
 		String stats = "Planet Stats:\n\n";
 		stats += "TECHNOLOGY\n\n";
 		stats += String.format(PLANET_STATS_FORMAT, "Attack Technology", technologyAttack)+"\n";

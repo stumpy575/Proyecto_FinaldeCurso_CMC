@@ -37,7 +37,6 @@ class LightHunter extends Ship{
 	
 	public LightHunter(int armor, int baseDamage) {
 		super(armor, baseDamage);
-		
 	}
 	public LightHunter() {
 		super();
@@ -82,7 +81,6 @@ class HeavyHunter extends Ship{
 	
 	public HeavyHunter(int armor, int baseDamage) {
 		super(armor, baseDamage);
-		
 	}
 	public HeavyHunter() {
 		super();
@@ -127,7 +125,6 @@ class Battleship extends Ship{
 	
 	public Battleship(int armor, int baseDamage) {
 		super(armor, baseDamage);
-		
 	}
 	public Battleship() {
 		super();
@@ -172,7 +169,6 @@ class ArmoredShip extends Ship{
 	
 	public ArmoredShip(int armor, int baseDamage) {
 		super(armor, baseDamage);
-		
 	}
 	public ArmoredShip() {
 		super();
