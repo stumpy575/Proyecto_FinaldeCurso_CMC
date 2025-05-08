@@ -158,4 +158,7 @@ public interface Variables {
 	public final String RESOURCES_HEADER_FORMAT = "%-40s%-40s";
 	public final String RESOURCES_ROW_FORMAT = "%-10s%10d" + " ".repeat(20) + "%-10s%10d";
 	
+	// planet stats string formats
+	public final String PLANET_STATS_FORMAT = "%-20s%5d";
+	public final String PLANET_STATS_FORMAT_RESOURCES = "%-10s%15d";
 }
