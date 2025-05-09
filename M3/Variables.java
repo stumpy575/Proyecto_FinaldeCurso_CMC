@@ -2,6 +2,10 @@ package proyectoFinal;
 
 public interface Variables {
 	
+	// resources available when starting the game
+	public final int PLANET_STARTING_DEUTERIUM = 15000;
+	public final int PLANET_STARTING_METAL = 50000;
+	
 	// resources available to create the first enemy fleet
 	public final int DEUTERIUM_BASE_ENEMY_ARMY = 26000;
 	public final int METAL_BASE_ENEMY_ARMY = 180000;
