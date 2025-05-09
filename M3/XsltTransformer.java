@@ -7,9 +7,9 @@ import java.io.*;
 public class XsltTransformer {
 
 	public static void main(String[] args) {
-		String XSLFILE = "";
-		String INFILE = "";
-		String OUTFILE = "";
+		String XSLFILE = "../";
+		String INFILE = "../";
+		String OUTFILE = "../";
 		
 		StreamSource xslcode = new StreamSource (new File(XSLFILE));
 		StreamSource input = new StreamSource (new File(INFILE));
