@@ -9,7 +9,7 @@ public class XsltTransformer {
 	public static void main(String[] args) {
 		String XSLFILE = "../";
 		String INFILE = "../";
-		String OUTFILE = "../";
+		String OUTFILE = "../m4/battles/";
 		
 		StreamSource xslcode = new StreamSource (new File(XSLFILE));
 		StreamSource input = new StreamSource (new File(INFILE));
