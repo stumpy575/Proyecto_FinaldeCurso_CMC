@@ -165,4 +165,12 @@ public interface Variables {
 	// planet stats string formats
 	public final String PLANET_STATS_FORMAT = "%-20s%5d";
 	public final String PLANET_STATS_FORMAT_RESOURCES = "%-10s%15d";
+	
+	// Console Menus
+	public final String CONSOLE_MENU_MAIN = "Options:\n1. View Planet Stats\n2. Build\n3. Upgrade Technology\n4. View Battle Reports\n0. Exit";
+	public final String CONSOLE_MENU_MAIN_THREAT = "Options:\n1. View Planet Stats\n2. Build\n3. Upgrade Technology\n4. View Battle Reports\n5. View Threat\n0. Exit";
+	public final String CONSOLE_MENU_UPGRADE_TECH = "Which technology do you wish to upgrade?\n1. Attack\n2. Defense\n0. Cancel";
+	public final String CONSOLE_MENU_BUILD_UNIT = "Which unit do you wish to build?\n1. Light Hunter\n2.Heavy Hunter\n3. Battleship\n4. Armored Ship\n5. Missile Launcher\n6. Ion Cannon\n7. Plasma Cannon\n0. Cancel";
+	public final String CONSOLE_MENU_BUILD_AMOUNT = "How many? (1-999) (0. Cancel)";
+	public final String CONSOLE_MENU_BATTLE_REPORTS = "What battle do you wish to view? (1-%1d) (0. Cancel)";
 }

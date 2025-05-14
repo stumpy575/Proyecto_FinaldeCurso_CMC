@@ -28,10 +28,10 @@ public class Planet implements Variables {
 	public void setTechnologyDefense(int technologyDefense) {
 		this.technologyDefense = technologyDefense;
 	}
-	public int getTechnologyAtack() {
+	public int getTechnologyAttack() {
 		return technologyAttack;
 	}
-	public void setTechnologyAtack(int technologyAtack) {
+	public void setTechnologyAttack(int technologyAtack) {
 		this.technologyAttack = technologyAtack;
 	}
 	public int getMetal() {
@@ -187,14 +187,14 @@ public class Planet implements Variables {
 		stats += String.format(PLANET_STATS_FORMAT, "Attack Technology", technologyAttack)+"\n";
 		stats += String.format(PLANET_STATS_FORMAT, "Defense Technology", technologyDefense)+"\n\n";
 		stats += "DEFENSES\n\n";
-		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[4], army[4])+"\n";
-		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[5], army[5])+"\n";
-		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[6], army[6])+"\n\n";
+		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[4], army[4].size())+"\n";
+		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[5], army[5].size())+"\n";
+		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[6], army[6].size())+"\n\n";
 		stats += "FLEET\n\n";
-		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[0], army[0])+"\n";
-		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[1], army[1])+"\n";
-		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[2], army[2])+"\n";
-		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[3], army[3])+"\n\n";
+		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[0], army[0].size())+"\n";
+		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[1], army[1].size())+"\n";
+		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[2], army[2].size())+"\n";
+		stats += String.format(PLANET_STATS_FORMAT, UNIT_NAMES[3], army[3].size())+"\n\n";
 		stats += "RESOURCES\n\n";
 		stats += String.format(PLANET_STATS_FORMAT_RESOURCES, "Metal", metal)+"\n";
 		stats += String.format(PLANET_STATS_FORMAT_RESOURCES, "Deuterium", deuterium)+"\n";
