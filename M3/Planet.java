@@ -20,6 +20,9 @@ public class Planet implements Variables {
 		this.upgradeDefenseTechnologyDeuteriumCost = UPGRADE_BASE_DEFENSE_TECHNOLOGY_DEUTERIUM_COST;
 		this.upgradeAttackTechnologyDeuteriumCost = UPGRADE_BASE_ATTACK_TECHNOLOGY_DEUTERIUM_COST;
 		this.army = new ArrayList[7];
+		for (int i = 0; i < army.length; i++) {
+			this.army[i] = new ArrayList();
+		}
 	}
 	
 	public int getTechnologyDefense() {
@@ -132,24 +135,32 @@ public class Planet implements Variables {
 	}
 	
 	private void newMilitaryUnit(int n, int unitType) {
+		int n_possible = n;
 		try {
-			checkEnoughResourcesToBuild(n, 0);
+			checkEnoughResourcesToBuild(n, unitType);
 		} catch (ResourceException e) {
-			final int n_possible_metal = (int) (metal/METAL_COST_UNITS[unitType]);
-			final int n_possible_deuterium = (int) (deuterium/DEUTERIUM_COST_UNITS[unitType]);
-			if (n_possible_metal < n_possible_deuterium) {
-				n = n_possible_metal;
+			int n_possible_metal = (int) (metal/METAL_COST_UNITS[unitType]);
+			if (DEUTERIUM_COST_UNITS[unitType] > 0) {
+				int n_possible_deuterium = (int) (deuterium/DEUTERIUM_COST_UNITS[unitType]);
+				if (n_possible_metal < n_possible_deuterium) {
+					n_possible = n_possible_metal;
+				} else {
+					n_possible = n_possible_deuterium;
+				}
 			} else {
-				n = n_possible_deuterium;
+				n_possible = n_possible_metal;
 			}
-			e.printStackTrace();
+			System.out.println(e.toString().substring(e.toString().indexOf("[")));
 		}
-		for (int i = 0; i<n; i++) {
+		for (int i = 0; i<n_possible; i++) {
 			final int armor = (int) (ARMOR_UNITS[unitType]*(100+technologyDefense*PLUS_ARMOR_UNITS_BY_TECHNOLOGY[unitType])/100);
 			final int attack = (int) (BASE_DAMAGE_UNITS[unitType]*(100+technologyAttack*PLUS_ATTACK_UNITS_BY_TECHNOLOGY[unitType])/100);
 			addMilitaryUnit(unitType, armor, attack);
-			metal -= METAL_COST_UNITS[unitType]*n;
-			deuterium -= DEUTERIUM_COST_UNITS[unitType]*n;
+			metal -= METAL_COST_UNITS[unitType];
+			deuterium -= DEUTERIUM_COST_UNITS[unitType];
+		}
+		if (Main.isConsoleMode()) {
+			System.out.println(n_possible+" "+UNIT_NAMES[unitType]+" built");
 		}
 	}
 	

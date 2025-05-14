@@ -18,6 +18,8 @@ public class Battle implements Variables{
 	private int[] enemyDrops, planetDrops;
 	private int[][] resourcesLosses;
 	
+	private int winningSide;
+	
 	private String battleStatistics;
 	private String battleDevelopmentLog;
 	
@@ -42,8 +44,7 @@ public class Battle implements Variables{
 		this.battleDevelopmentLog = "";
 	}
 	
-	// Returns whether battle is won by Planet
-	public boolean performBattle() {
+	public void performBattle() {
 		initInitialArmies();
 		
 		log("BATTLE START");
@@ -55,12 +56,8 @@ public class Battle implements Variables{
 			atkArmy = defArmy+1%2;
 		}
 		
-		int winningSide = calculateWinner();
-		generateBattleStatistics(winningSide);
-		if (winningSide == 0) {
-			return true;
-		} 
-		return false;
+		winningSide = calculateWinner();
+		generateBattleStatistics();
 	}
 	
 	private void initInitialArmies() {
@@ -206,7 +203,7 @@ public class Battle implements Variables{
 		return false;
 	}
 	
-	private void generateBattleStatistics(int winningSide) {
+	private void generateBattleStatistics() {
 		battleStatistics += "BATTLE STATISTICS\n";
 		
 		battleStatistics += String.format(ARMY_TABLE_FORMAT, "Planet Army", "Units", "Drops", "Enemy Army", "Units", "Drops")+"\n\n";
@@ -260,5 +257,9 @@ public class Battle implements Variables{
 
 	public ArrayList<MilitaryUnit>[] getPlanetArmy() {
 		return planetArmy;
+	}
+
+	public int getWinningSide() {
+		return winningSide;
 	}
 }
