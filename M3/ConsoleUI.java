@@ -22,13 +22,16 @@ public class ConsoleUI implements Variables {
 	public void start() {
 		planet = new Planet(0, 0, PLANET_STARTING_METAL, PLANET_STARTING_DEUTERIUM);
 		enemy_army = new ArrayList[4];
+		for (int i = 0; i < enemy_army.length; i++) {
+			this.enemy_army[i] = new ArrayList();
+		}
 		battle_stats_logs = new String[5];
 		battle_development_logs = new String[5];
 		threat_coming = false;
 		
 		Scanner sc = new Scanner(System.in);
 		boolean quit = false;
-//		startEnemyTimer();
+		startEnemyTimer();
 		while (!quit) {
 			System.out.println(getMenu(menu_types.MAIN));
 			switch(chooseValidOption(sc, menu_types.MAIN)) {
@@ -74,7 +77,8 @@ public class ConsoleUI implements Variables {
 			}
 			
 		};
-		enemy_timer.schedule(enemy_timer_task, 90000, 90000);
+		enemy_timer.schedule(enemy_timer_task, 5000, 20000); // Testing
+//		enemy_timer.schedule(enemy_timer_task, 90000, 90000);
 	}
 	
 	private String getMenu(menu_types mt) {
@@ -86,7 +90,7 @@ public class ConsoleUI implements Variables {
 		case BUILD_AMOUNT:
 			return CONSOLE_MENU_BUILD_AMOUNT;
 		case UPGRADE_TECH:
-			return CONSOLE_MENU_UPGRADE_TECH;
+			return String.format(CONSOLE_MENU_UPGRADE_TECH, planet.getUpgradeAttackTechnologyDeuteriumCost(), planet.getUpgradeDefenseTechnologyDeuteriumCost());
 		case BATTLE_REPORTS:
 			return String.format(CONSOLE_MENU_BATTLE_REPORTS, getBattleReportAmount());
 		default:
@@ -197,18 +201,26 @@ public class ConsoleUI implements Variables {
 	}
 
 	private void viewBattleReports(Scanner sc) {
-		if (getBattleReportAmount() > 0) {
+		int battle_report_amount = getBattleReportAmount();
+		if (battle_report_amount == 0) {
+			System.out.println("[!] No battle reports to view!");
+		} else if (battle_report_amount == 1) {
+			System.out.println("Displaying the only battle report logged...");
+			System.out.println(battle_stats_logs[0]);
+			System.out.println("Do you wish to view the step by step development? (y/n)");
+			if (sc.next().toLowerCase().equals("y")) {
+				System.out.println(battle_development_logs[0]);
+			}
+		} else {
 			System.out.println(getMenu(menu_types.BATTLE_REPORTS));
 			int option = chooseValidOption(sc, menu_types.BATTLE_REPORTS);
 			if (option != 0) {
-				System.out.println(battle_stats_logs[option]);
+				System.out.println(battle_stats_logs[option-1]);
 				System.out.println("Do you wish to view the step by step development? (y/n)");
 				if (sc.next().toLowerCase().equals("y")) {
-					System.out.println(battle_development_logs[option]);
+					System.out.println(battle_development_logs[option-1]);
 				}
 			}
-		} else {
-			System.out.println("[!] No battle reports to view!");
 		}
 	}
 	
@@ -227,6 +239,7 @@ public class ConsoleUI implements Variables {
 		for (int i = 0; i < enemy_army.length; i++) {
 			threat += String.format(THREAT_VIEW_FORMAT, UNIT_NAMES[i], enemy_army[i].size())+"\n\n";
 		}
+		System.out.println(threat);
 	}
 	
 	
@@ -270,8 +283,10 @@ public class ConsoleUI implements Variables {
 			totalSum += i;
 		}
 		int randomNum = (int) (totalSum*Math.random());
+		int accumulatingSum = 0;
 		for (int i = 0; i < chanceArray.length; i++) {
-			if (randomNum < chanceArray[i]) {
+			accumulatingSum += chanceArray[i];
+			if (randomNum < accumulatingSum) {
 				return i;
 			}
 		}
@@ -300,7 +315,7 @@ public class ConsoleUI implements Variables {
 	private void addLogToArray(String[] log_array, String log) {
 		if (!isArrayFull(log_array)) {
 			for (int i = 0; i <log_array.length; i++) {
-				if (log_array[i].isEmpty()) {
+				if (log_array[i] == null) {
 					log_array[i] = log;
 					break;
 				}
@@ -316,7 +331,7 @@ public class ConsoleUI implements Variables {
 	
 	private boolean isArrayFull(String[] array) {
 		for (int i = 0; i <array.length; i++) {
-			if (array[i].isEmpty()) {
+			if (array[i] == null) {
 				return false;
 			}
 		}

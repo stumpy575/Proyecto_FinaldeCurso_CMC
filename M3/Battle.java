@@ -82,11 +82,13 @@ public class Battle implements Variables{
 	}
 	
 	private boolean doesBattleEnd() {
-		if (currentSumUnitsPlanet/initialSumUnitsPlanet >= PERCENTAGE_UNITS_BATTLE_END_THRESHOLD ||
-			currentSumUnitsEnemy/initialSumUnitsEnemy >= PERCENTAGE_UNITS_BATTLE_END_THRESHOLD) {
-			return false;
+		if (initialSumUnitsPlanet == 0 ||
+			(currentSumUnitsPlanet/initialSumUnitsPlanet < PERCENTAGE_UNITS_BATTLE_END_THRESHOLD &&
+			currentSumUnitsEnemy/initialSumUnitsEnemy < PERCENTAGE_UNITS_BATTLE_END_THRESHOLD)
+		) {
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	private int calculateWinner() {
@@ -105,7 +107,7 @@ public class Battle implements Variables{
 		}
 		for (int i = 0; i < enemyDrops.length; i++) {
 			resourcesLosses[1][0] += enemyDrops[i]*METAL_COST_UNITS[i];
-			resourcesLosses[2][1] += enemyDrops[i]*DEUTERIUM_COST_UNITS[i];
+			resourcesLosses[1][1] += enemyDrops[i]*DEUTERIUM_COST_UNITS[i];
 		}
 		resourcesLosses[0][2] = resourcesLosses[0][0] + resourcesLosses[0][1]*5;
 		resourcesLosses[1][2] = resourcesLosses[1][0] + resourcesLosses[1][1]*5;
@@ -175,8 +177,10 @@ public class Battle implements Variables{
 			totalSum += i;
 		}
 		int randomNum = (int) (totalSum*Math.random());
+		int accumulatingSum = 0;
 		for (int i = 0; i < chanceArray.length; i++) {
-			if (randomNum < chanceArray[i]) {
+			accumulatingSum += chanceArray[i];
+			if (randomNum < accumulatingSum) {
 				return i;
 			}
 		}
@@ -229,8 +233,8 @@ public class Battle implements Variables{
 		
 		battleStatistics += "*".repeat(80)+"\n";
 		battleStatistics += "Waste Generated:\n";
-		battleStatistics += String.format(RESOURCES_ROW_FORMAT, "Metal:", wasteMetalDeuterium[0], "", "")+"\n";
-		battleStatistics += String.format(RESOURCES_ROW_FORMAT, "Metal:", wasteMetalDeuterium[1], "", "")+"\n\n";
+		battleStatistics += String.format(RESOURCES_ROW_FORMAT_SHORT, "Metal:", wasteMetalDeuterium[0])+"\n";
+		battleStatistics += String.format(RESOURCES_ROW_FORMAT_SHORT, "Deuterium:", wasteMetalDeuterium[1])+"\n\n";
 		
 		if (winningSide == 0) {
 			battleStatistics += "Battle Won By Planet, We Collect Rubble\n\n";
