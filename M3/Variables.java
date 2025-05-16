@@ -7,8 +7,8 @@ public interface Variables {
 	public final int PLANET_STARTING_METAL = 50000;
 	
 	// resources available to create the first enemy fleet
-	public final int DEUTERIUM_BASE_ENEMY_ARMY = 26000;
-	public final int METAL_BASE_ENEMY_ARMY = 180000;
+	public final int DEUTERIUM_BASE_ENEMY_ARMY = 2600;
+	public final int METAL_BASE_ENEMY_ARMY = 18000;
 	
 	// percentage increase of resources available to create enemy fleet
 	public final int ENEMY_FLEET_INCREASE = 6;

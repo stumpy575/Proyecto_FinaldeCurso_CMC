@@ -247,11 +247,14 @@ public class ConsoleUI implements Variables {
 	
 	
 	private void createEnemyArmy() {
-		int metal_spent = 0;
-		int deuterium_spent = 0;
+		int metal_remaining = enemy_metal;
+		int deuterium_remaining = enemy_deuterium;
 		while(true) {
 			MilitaryUnit unit_to_add;
-			int group_to_add = selectEnemyGroup();
+			int group_to_add = selectEnemyGroup(metal_remaining,deuterium_remaining);
+			if (group_to_add == -1) {
+				break;
+			}
 			switch(group_to_add) {
 			case 0:
 				unit_to_add = (MilitaryUnit) new LightHunter();
@@ -269,19 +272,21 @@ public class ConsoleUI implements Variables {
 				unit_to_add = null;
 				break;
 			}
-			metal_spent += METAL_COST_UNITS[group_to_add];
-			deuterium_spent += DEUTERIUM_COST_UNITS[group_to_add];
-			if (metal_spent > enemy_metal || deuterium_spent > enemy_deuterium) {
-				break;
-			} else {
-				enemy_army[group_to_add].add(unit_to_add);
-			}
+			metal_remaining -= METAL_COST_UNITS[group_to_add];
+			deuterium_remaining -= DEUTERIUM_COST_UNITS[group_to_add];
+			enemy_army[group_to_add].add(unit_to_add);
 		}
 	}
 	
-	private int selectEnemyGroup() {
+	private int selectEnemyGroup(int metal_remaining, int deuterium_remaining) {
 		int totalSum = 0;
 		int[] chanceArray = CHANCE_CREATE_UNIT_ENEMY_ARMY;
+		for (int i = 0; i < chanceArray.length; i++) {
+			if (metal_remaining < METAL_COST_UNITS[i] || deuterium_remaining < DEUTERIUM_COST_UNITS[i]) {
+				chanceArray[i] = 0;
+			}
+		}
+		
 		for (int i : chanceArray) {
 			totalSum += i;
 		}
