@@ -89,20 +89,25 @@ public class Planet implements Variables {
 	}
 	
 	private void checkEnoughResourcesToBuild(int n, int unitType) throws ResourceException {
-		final int metal_cost = METAL_COST_UNITS[unitType];
-		final int deuterium_cost = DEUTERIUM_COST_UNITS[unitType];
+		int metal_cost = METAL_COST_UNITS[unitType];
+		int deuterium_cost = DEUTERIUM_COST_UNITS[unitType];
 		if (metal<metal_cost*n || deuterium<deuterium_cost*n) {
-			final int n_possible_metal = (int) (metal/metal_cost);
-			final int n_possible_deuterium = (int) (deuterium/deuterium_cost);
-			if (n_possible_metal < n_possible_deuterium) {
-				n = n_possible_metal;
+			int n_possible = n;
+			int n_possible_metal = (int) (metal/METAL_COST_UNITS[unitType]);
+			if (DEUTERIUM_COST_UNITS[unitType] > 0) {
+				int n_possible_deuterium = (int) (deuterium/DEUTERIUM_COST_UNITS[unitType]);
+				if (n_possible_metal < n_possible_deuterium) {
+					n_possible = n_possible_metal;
+				} else {
+					n_possible = n_possible_deuterium;
+				}
 			} else {
-				n = n_possible_deuterium;
+				n_possible = n_possible_metal;
 			}
-			if (n == 0) {
+			if (n_possible == 0) {
 				throw new ResourceException("[!] Not enough resources for any "+UNIT_NAMES[unitType]+"s.");
 			} else {
-				throw new ResourceException("[!] Not enough resources. Only "+n+" "+UNIT_NAMES[unitType]+"s will be built.");
+				throw new ResourceException("[!] Not enough resources. Only "+n_possible+" "+UNIT_NAMES[unitType]+"s will be built.");
 			}
 		}
 	}

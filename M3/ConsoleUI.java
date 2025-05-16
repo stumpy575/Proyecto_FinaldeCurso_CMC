@@ -205,7 +205,10 @@ public class ConsoleUI implements Variables {
 		if (battle_report_amount == 0) {
 			System.out.println("[!] No battle reports to view!");
 		} else if (battle_report_amount == 1) {
-			System.out.println("Displaying the only battle report logged...");
+			System.out.println("Only 1 battle report logged.");
+			System.out.println("Press Enter to display it");
+			Scanner sc2 = new Scanner(System.in);
+			sc2.nextLine();
 			System.out.println(battle_stats_logs[0]);
 			System.out.println("Do you wish to view the step by step development? (y/n)");
 			if (sc.next().toLowerCase().equals("y")) {
