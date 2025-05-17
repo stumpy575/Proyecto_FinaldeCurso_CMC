@@ -4,12 +4,23 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
 public class GUIwelcome extends JFrame implements Variables {
-	Planet planet= new Planet(1,1,500,500);
+	Planet planet= new Planet(0,0,PLANET_STARTING_METAL,PLANET_STARTING_DEUTERIUM);
+    private JProgressBar progressBar;
+    private JPanel attackPanel;
+    private JPanel[] enemyPanels = new JPanel[4];
+    private JPanel enemigoPanel;
+    private JLabel radarLabel;
+    
 
     public GUIwelcome() {
         setTitle("The Great Space Wars!");
@@ -17,6 +28,7 @@ public class GUIwelcome extends JFrame implements Variables {
         setSize(1026, 552);
         setResizable(false);
         setLocationRelativeTo(null);
+//        setFocusable(true);
 
         // Menú barra herramientas
         JMenuBar menuBar = new JMenuBar();
@@ -30,7 +42,7 @@ public class GUIwelcome extends JFrame implements Variables {
         add(mainPanel);
 
         // Panel planeta
-        
+        JPanel planetStatsPanel = new JPanel(new BorderLayout(10, 10));
         //Imagen
         BufferedImage img=null;
         try {
@@ -39,7 +51,7 @@ public class GUIwelcome extends JFrame implements Variables {
             e.printStackTrace();
         }
         ImageIcon imgplanet = new ImageIcon(img.getScaledInstance(225, 225, Image.SCALE_SMOOTH));      
-        JPanel planetStatsPanel = new JPanel(new BorderLayout(10, 10));
+    
         planetStatsPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         JLabel planetImage = new JLabel(imgplanet);
         planetStatsPanel.add(planetImage, BorderLayout.CENTER);
@@ -55,110 +67,142 @@ public class GUIwelcome extends JFrame implements Variables {
         JButton boton_upgrade_attack = new JButton(arrowup);
         
         JPanel infoPanel = new JPanel(new GridLayout(4, 2, 5, 5));
+        JLabel infometal= new JLabel("Metal: "+planet.getMetal());
+        JLabel infodeuterium= new JLabel("Deuterium: " + planet.getDeuterium());
 
-        infoPanel.add(new JLabel("Metal: " + planet.getMetal()));
+        infoPanel.add(infometal);
         infoPanel.add(new JLabel());
-        infoPanel.add(new JLabel("Deuterium: " + planet.getDeuterium()));
+        infoPanel.add(infodeuterium);
         infoPanel.add(new JLabel());
         
-        //se meten los botones en paneles de flowlayout para que no ocupen todo el grid y que estén bonitos
-        infoPanel.add(new JLabel("Defense Tech: " + planet.getTechnologyDefense()));
-        JPanel contdefense = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        contdefense.add(boton_upgrade_defense);
-        infoPanel.add(contdefense);
-        infoPanel.add(new JLabel("Attack Tech: " + planet.getTechnologyAttack()));
+        //Se meten los botones en paneles de flowlayout para que no ocupen todo el grid y que estén bonitos
+        JLabel infotechattack= new JLabel("Attack Tech: " + planet.getTechnologyAttack());
+        JLabel infotechdefense= new JLabel("Defense Tech: " + planet.getTechnologyDefense());
+        infoPanel.add(infotechattack);
         JPanel contattack = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         contattack.add(boton_upgrade_attack);
         infoPanel.add(contattack);
+        infoPanel.add(infotechdefense);
+        JPanel contdefense = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        contdefense.add( boton_upgrade_defense);
+        infoPanel.add(contdefense);
         planetStatsPanel.add(infoPanel, BorderLayout.EAST);
 
         mainPanel.add(planetStatsPanel);
 
      // Panel unidades
-        JPanel combinedPanel = new JPanel(new BorderLayout());
-        combinedPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        JPanel unitsPanel = new JPanel(new BorderLayout());
+        unitsPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        unitsPanel.setBackground(new Color(200, 200, 255));
 
-        JPanel unitsPanel = new JPanel(new GridLayout(2, 4, 5, 5));
+        JPanel unitsattackPanel = new JPanel(new GridLayout(2, 4, 5, 5));
+        unitsattackPanel.setBackground(new Color(200, 200, 255));
 
-        // unidades ataque
-        ImageIcon img_lighthunter = new ImageIcon(getClass().getResource("../imagenes/lighthunter.png"));
-        unitsPanel.add(new JLabel(img_lighthunter));
+        // Unidades ataque
+        ImageIcon imgLightHunter = new ImageIcon(getClass().getResource("../imagenes/lighthunter.png"));
+        JLabel labelImgLightHunter = new JLabel(imgLightHunter);
+        unitsattackPanel.add(labelImgLightHunter);
+
         ImageIcon img_heavyhunter = new ImageIcon(getClass().getResource("../imagenes/heavyhunter.png"));
-        unitsPanel.add(new JLabel(img_heavyhunter));
-        ImageIcon img_battleship= new ImageIcon(getClass().getResource("../imagenes/battleship.png"));
-        unitsPanel.add(new JLabel(img_battleship));
-        ImageIcon img_armoredship= new ImageIcon(getClass().getResource("../imagenes/armoredship.png"));
-        unitsPanel.add(new JLabel(img_armoredship));
+        JLabel labelImgHeavyHunter = new JLabel(img_heavyhunter);
+        unitsattackPanel.add(labelImgHeavyHunter);
+
+        ImageIcon img_battleship = new ImageIcon(getClass().getResource("../imagenes/battleship.png"));
+        JLabel labelImgBattleship = new JLabel(img_battleship);
+        unitsattackPanel.add(labelImgBattleship);
+
+        ImageIcon img_armoredship = new ImageIcon(getClass().getResource("../imagenes/armoredship.png"));
+        JLabel labelImgArmoredShip = new JLabel(img_armoredship);
+        unitsattackPanel.add(labelImgArmoredShip);
+
  
-        JLabel label_lighthunter = new JLabel("Light Hunter: ");
-        label_lighthunter.setHorizontalAlignment(SwingConstants.CENTER);
-        unitsPanel.add(label_lighthunter);
+        JLabel datalabel_lighthunter = new JLabel("Light Hunter: "+planet.getArmy()[0].size());
+        datalabel_lighthunter.setHorizontalAlignment(SwingConstants.CENTER);
+        unitsattackPanel.add(datalabel_lighthunter);
 
-        JLabel label_heavyhunter = new JLabel("Heavy Hunter: 100");
-        label_heavyhunter.setHorizontalAlignment(SwingConstants.CENTER);
-        unitsPanel.add(label_heavyhunter);
+        JLabel datalabel_heavyhunter = new JLabel("Heavy Hunter: "+planet.getArmy()[1].size());
+        datalabel_heavyhunter.setHorizontalAlignment(SwingConstants.CENTER);
+        unitsattackPanel.add(datalabel_heavyhunter);
 
-        JLabel label_battleship= new JLabel("Battleship: 100");
-        label_battleship.setHorizontalAlignment(SwingConstants.CENTER);
-        unitsPanel.add(label_battleship);
+        JLabel datalabel_battleship= new JLabel("Battleship: "+planet.getArmy()[2].size());
+        datalabel_battleship.setHorizontalAlignment(SwingConstants.CENTER);
+        unitsattackPanel.add(datalabel_battleship);
 
-        JLabel label_armoredship= new JLabel("Armored Ship: 100");
-        label_armoredship.setHorizontalAlignment(SwingConstants.CENTER);
-        unitsPanel.add(label_armoredship);
+        JLabel datalabel_armoredship= new JLabel("Armored Ship: "+planet.getArmy()[3].size());
+        datalabel_armoredship.setHorizontalAlignment(SwingConstants.CENTER);
+        unitsattackPanel.add(datalabel_armoredship);
 
-        // unidades defensa
-        JPanel defensePanel = new JPanel(new GridLayout(2, 3, 5, 5));
+        // Unidades defensa
+        JPanel unitsdefensePanel = new JPanel(new GridLayout(2, 3, 5, 5));
+        unitsdefensePanel.setBackground(new Color(200, 200, 255));
 
         ImageIcon img_missilelauncher = new ImageIcon(getClass().getResource("../imagenes/missilelauncher.png"));
-        defensePanel.add(new JLabel(img_missilelauncher));
+        JLabel labelImgMissileLauncher = new JLabel(img_missilelauncher);
+        unitsdefensePanel.add(labelImgMissileLauncher);
+
         ImageIcon img_ioncannon = new ImageIcon(getClass().getResource("../imagenes/ioncannon.png"));
-        defensePanel.add(new JLabel(img_ioncannon));
+        JLabel labelImgIonCannon = new JLabel(img_ioncannon);
+        unitsdefensePanel.add(labelImgIonCannon);
+
         ImageIcon img_plasmacannon = new ImageIcon(getClass().getResource("../imagenes/plasmacannon.png"));
-        defensePanel.add(new JLabel(img_plasmacannon));
+        JLabel labelImgPlasmaCannon = new JLabel(img_plasmacannon);
+        unitsdefensePanel.add(labelImgPlasmaCannon);
 
-        JLabel label_missile = new JLabel("Missile Launcher: 100");
-        label_missile.setHorizontalAlignment(SwingConstants.CENTER);
-        defensePanel.add(label_missile);
 
-        JLabel label_ion = new JLabel("Ion Cannon: 100");
-        label_ion.setHorizontalAlignment(SwingConstants.CENTER);
-        defensePanel.add(label_ion);
+//        JLabel label_missile = new JLabel("Missile Launcher: "+planet.getArmy()[4].size());
+//        label_missile.setHorizontalAlignment(SwingConstants.CENTER);
+//        unitsdefensePanel.add(label_missile);
+//
+//        JLabel label_ion = new JLabel("Ion Cannon: "+planet.getArmy()[5].size());
+//        label_ion.setHorizontalAlignment(SwingConstants.CENTER);
+//        unitsdefensePanel.add(label_ion);
+//
+//        JLabel label_plasma = new JLabel("Plasma Cannon: "+planet.getArmy()[6].size());
+//        label_plasma.setHorizontalAlignment(SwingConstants.CENTER);
+//        unitsdefensePanel.add(label_plasma);
 
-        JLabel label_plasma = new JLabel("Plasma Cannon: 100");
-        label_plasma.setHorizontalAlignment(SwingConstants.CENTER);
-        defensePanel.add(label_plasma);
-
-        // Añadir los paneles al principal si hace falta
-        combinedPanel.add(unitsPanel, BorderLayout.NORTH);
-        combinedPanel.add(defensePanel, BorderLayout.SOUTH);
-
-    
-
-        combinedPanel.add(new JLabel("Units & Defenses"), BorderLayout.SOUTH);
-        combinedPanel.add(unitsPanel, BorderLayout.NORTH);
-        combinedPanel.add(defensePanel, BorderLayout.SOUTH);
-        mainPanel.add(combinedPanel); // segunda posición
+        unitsPanel.add(unitsattackPanel, BorderLayout.NORTH);
+        unitsPanel.add(unitsdefensePanel, BorderLayout.SOUTH);
+        unitsPanel.add(unitsattackPanel, BorderLayout.NORTH);
+        unitsPanel.add(unitsdefensePanel, BorderLayout.SOUTH);
+        mainPanel.add(unitsPanel);
 
         // Panel enemigos
         JPanel attackContainer = new JPanel(new BorderLayout(5, 5));
-
-        // Progreso encima
-        JProgressBar progressBar = new JProgressBar();
-        progressBar.setValue(60);
-        progressBar.setStringPainted(false);
+       
+        // Barra de progreso
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setValue(0);
+        progressBar.setStringPainted(true);
         attackContainer.add(progressBar, BorderLayout.NORTH);
-
-        // Panel ataque debajo
-        JPanel attackPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        
+        // panel enemigos
+        attackPanel = new JPanel(new CardLayout());
         attackPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        attackPanel.add(new JLabel(new ImageIcon(new BufferedImage(50, 50, BufferedImage.TYPE_INT_RGB))));
-        attackPanel.add(new JLabel("5"));
-        attackPanel.add(new JLabel(new ImageIcon(new BufferedImage(50, 50, BufferedImage.TYPE_INT_RGB))));
-        attackPanel.add(new JLabel("3"));
+        attackPanel.setBackground(new Color(255, 200, 200));
+
+        // Panel radar
+        radarLabel = new JLabel(new ImageIcon(getClass().getResource("/imagenes/radar.gif")));
+        radarLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        JPanel radarPanel = new JPanel(new BorderLayout());
+        radarPanel.setBackground(new Color(255, 200, 200));
+        radarPanel.add(radarLabel, BorderLayout.CENTER);
+        attackPanel.add(radarPanel, "RADAR");
+
+        // Panel de enemigos vacío (se rellenará más tarde)
+        enemigoPanel = new JPanel(new GridLayout(1, 4, 10, 10));
+        enemigoPanel.setBackground(new Color(255, 200, 200));
+        for (int i = 0; i < 4; i++) {
+            enemyPanels[i] = new JPanel();
+            enemyPanels[i].setLayout(new BoxLayout(enemyPanels[i], BoxLayout.Y_AXIS));
+            enemyPanels[i].setOpaque(false);
+            enemigoPanel.add(enemyPanels[i]);
+        }
+        attackPanel.add(enemigoPanel, "ENEMIGOS");
 
         attackContainer.add(attackPanel, BorderLayout.CENTER);
+        mainPanel.add(attackContainer);
 
-        mainPanel.add(attackContainer); // tercera posición
 
         // Panel consola
         JPanel consolePanel = new JPanel(new BorderLayout());
@@ -172,14 +216,197 @@ public class GUIwelcome extends JFrame implements Variables {
         console.setWrapStyleWord(true);
 
         JScrollPane scroll = new JScrollPane(console);
-        scroll.setPreferredSize(new Dimension(0, 100));
-        consolePanel.add(new JLabel("Console"), BorderLayout.NORTH);
         consolePanel.add(scroll, BorderLayout.CENTER);
+        mainPanel.add(consolePanel);
+      //Eventos
+      		boton_upgrade_attack.addActionListener(new ActionListener() {
+      			public void actionPerformed(ActionEvent e) {
+      				try {
+      					planet.upgradeTechnologyAttack();
+      					infotechattack.setText("Attack Tech: " + planet.getTechnologyAttack());
+      					infodeuterium.setText("Deuterium: "+ planet.getDeuterium());
+      					
+      				} catch (ResourceException e1) {
+      					// TODO Auto-generated catch block
+      					e1.printStackTrace();
+      					console.append("\n>"+e1.getMessage());
+      				}
+      				
+      			}
+      		});
+      		
+      		boton_upgrade_defense.addActionListener(new ActionListener() {
+      			public void actionPerformed(ActionEvent e) {
+      				try {
+      					planet.upgradeTechnologyDefense();
+      					infotechdefense.setText("Defense Tech: " + planet.getTechnologyDefense());
+      					infodeuterium.setText("Deuterium: "+ planet.getDeuterium());
+      					
+      				} catch (ResourceException e1) {
+      					// TODO Auto-generated catch block
+      					e1.printStackTrace();
+      					console.append("\n>"+e1.getMessage());
+      				}
+      			}
+      		});
+      		labelImgLightHunter.addMouseListener(new MouseAdapter() {
+      		    public void mouseClicked(MouseEvent e) {
+      		        String input = JOptionPane.showInputDialog(null, "How many Light Hunters do you want to create?");
+      		        if (input != null) {
+      		            try {
+      		                int n = Integer.parseInt(input);
+      		                int metalCost = METAL_COST_LIGTHHUNTER * n;
+      		                int deuteriumCost = DEUTERIUM_COST_LIGTHHUNTER * n;
 
-        mainPanel.add(consolePanel); // cuarta posición
+      		                int opcion = JOptionPane.showConfirmDialog(
+      		                    null,
+      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
+      		                    "Confirm Creation",
+      		                    JOptionPane.YES_NO_OPTION,
+      		                    JOptionPane.WARNING_MESSAGE
+      		                );
 
+      		                if (opcion == JOptionPane.YES_OPTION) {
+      		                    try {
+      		                        planet.newLightHunter(n);
+      		                    } catch (ResourceException ex) {
+      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
+      		                    }
+      		                }
+
+      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
+      		                infometal.setText("Metal: " + planet.getMetal());
+      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
+
+      		            } catch (NumberFormatException ex) {
+      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
+      		            }
+      		        }
+      		    }
+      		});
+
+
+
+      		labelImgHeavyHunter.addMouseListener(new MouseAdapter( ) {
+      			public void mouseClicked(MouseEvent e) {
+      				
+      			}
+      		});
+      		labelImgArmoredShip.addMouseListener(new MouseAdapter( ) {
+      			public void mouseClicked(MouseEvent e) {
+      				
+      			}
+      		});
+      		labelImgBattleship.addMouseListener(new MouseAdapter( ) {
+      			public void mouseClicked(MouseEvent e) {
+      				
+      			}
+      		});
+      		labelImgMissileLauncher.addMouseListener(new MouseAdapter( ) {
+      			public void mouseClicked(MouseEvent e) {
+      				
+      			}
+      		});
+      		labelImgIonCannon.addMouseListener(new MouseAdapter( ) {
+      			public void mouseClicked(MouseEvent e) {
+      				
+      			}
+      		});
+      		labelImgPlasmaCannon.addMouseListener(new MouseAdapter( ) {
+      			public void mouseClicked(MouseEvent e) {
+      				
+      			}
+      		});
+              
+      		int[] clickcount= {0};
+      		planetImage.addMouseListener(new MouseAdapter() {
+      			public void mouseClicked(MouseEvent e) {
+      				clickcount[0]++;
+      				if (clickcount[0]==10) {
+      					try {
+      		                BufferedImage easterEggImg = ImageIO.read(getClass().getResource("../imagenes/easteregg.png"));
+      		                planetImage.setIcon(new ImageIcon(easterEggImg.getScaledInstance(225, 225, Image.SCALE_SMOOTH)));
+      		                console.append("\n>monke");
+      		            } catch (IOException ex) {
+      		                ex.printStackTrace();
+      		                console.append("\n>[ERROR] NO FUNCIONA EL MONKE :((((((((");
+      		            }
+      				}
+      			}
+      		});
+      		iniciarCuentaAtrasBarra();
+    }
+
+    public void iniciarCuentaAtrasBarra() {
+        Timer timer = new Timer(100, null);
+        final int[] progreso = {0};
+        final int[] oleada = {1};
+        final boolean[] radarOculto = {false};
+        final boolean[] enemigosCargados = {false};
+
+        CardLayout cl = (CardLayout) attackPanel.getLayout();
+
+        timer.addActionListener(e -> {
+            progreso[0]++;
+            progressBar.setValue(progreso[0]);
+            progressBar.setString(progreso[0] + " %");
+
+            if (progreso[0] >= 50 && !enemigosCargados[0]) {
+                cl.show(attackPanel, "ENEMIGOS");
+
+                // Mostrar aviso de detección
+                JOptionPane.showMessageDialog(this, "¡Detectando enemigos!", "Alerta", JOptionPane.WARNING_MESSAGE);
+
+                String[] rutas = {"/imagenes/lighthunter.png","/imagenes/heavyhunter.png","/imagenes/battleship.png", "/imagenes/armoredship.png"};
+                String[] nombres = {"Light Hunter: 30","Heavy Hunter: 20","Battleship: 15","Armored Ship: 10"};
+
+                for (int i = 0; i < 4; i++) {
+                    enemyPanels[i].removeAll();
+                    JLabel img = new JLabel(new ImageIcon(getClass().getResource(rutas[i])));
+                    JLabel txt = new JLabel(nombres[i]);
+                    img.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    txt.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    enemyPanels[i].add(Box.createVerticalGlue());
+                    enemyPanels[i].add(img);
+                    enemyPanels[i].add(Box.createVerticalStrut(2));
+                    enemyPanels[i].add(txt);
+                    enemyPanels[i].add(Box.createVerticalGlue());
+                    enemyPanels[i].revalidate();
+                    enemyPanels[i].repaint();
+                }
+
+                enemigosCargados[0] = true;
+            }
+
+
+
+            // Reiniciar al 100%
+            if (progreso[0] >= 100) {
+                progreso[0] = 0;
+                radarOculto[0] = false;
+                enemigosCargados[0] = false;
+
+                for (int i = 0; i < 4; i++) {
+                    enemyPanels[i].removeAll();
+                    enemyPanels[i].revalidate();
+                    enemyPanels[i].repaint();
+                }
+
+                cl.show(attackPanel, "RADAR");
+                oleada[0]++;
+                JOptionPane.showMessageDialog(
+                    this,
+                    "¡Prepárate para la batalla!",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE
+                );
+            }
+        });
+
+//        timer.start();
         setVisible(true);
     }
+
 
     public static void main(String[] args) {
         new GUIwelcome();
