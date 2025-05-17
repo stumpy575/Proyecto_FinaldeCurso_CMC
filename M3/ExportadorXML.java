@@ -16,7 +16,7 @@ public class ExportadorXML {
         String query = "SELECT * FROM vista_reporte_batalla WHERE num_battle = ? ORDER BY num_line;";
 
         // Carpeta donde se guarda todo
-        String relativeBasePath = Paths.get("M4", "html", "battles").toAbsolutePath().toString() + File.separator;
+        String relativeBasePath = Paths.get("html", "battles").toAbsolutePath().toString() + File.separator;
         String xmlFilename = relativeBasePath + "battle" + battleId + ".xml";
         String htmlFilename = relativeBasePath + "battle" + battleId + ".html";
         String xslFile = relativeBasePath + "battle" + battleId + ".xsl";
