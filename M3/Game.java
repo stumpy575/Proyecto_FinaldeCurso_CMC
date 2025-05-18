@@ -26,10 +26,18 @@ public class Game implements Variables {
 		}
 	}
 	
+<<<<<<< HEAD
 	private void startResourcesTimer() {
 		Timer resources_timer = new Timer();
 		TimerTask resources_timer_task = new TimerTask() {
 			public void run() {
+=======
+	public void startResourcesTimer() {
+		Timer resources_timer = new Timer();
+		TimerTask resources_timer_task = new TimerTask() {
+			public void run() {
+				
+>>>>>>> marc
 				System.out.println(PLANET_METAL_GENERATED+" Metal and " + PLANET_DEUTERIUM_GENERATED + " Deuterium generated");
 				planet.setMetal(planet.getMetal() + PLANET_METAL_GENERATED);
 				planet.setDeuterium(planet.getDeuterium() + PLANET_DEUTERIUM_GENERATED);
