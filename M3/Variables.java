@@ -7,8 +7,8 @@ public interface Variables {
 	public final int PLANET_STARTING_METAL = 50000;
 	
 	// resources available to create the first enemy fleet
-	public final int DEUTERIUM_BASE_ENEMY_ARMY = 2600;
-	public final int METAL_BASE_ENEMY_ARMY = 18000;
+	public final int DEUTERIUM_BASE_ENEMY_ARMY = 6500;
+	public final int METAL_BASE_ENEMY_ARMY = 42000;
 	
 	// percentage increase of resources available to create enemy fleet
 	public final int ENEMY_FLEET_INCREASE = 6;
@@ -171,8 +171,7 @@ public interface Variables {
 	public final String THREAT_VIEW_FORMAT = "%-20s%5d";
 	
 	// Console Menus
-	public final String CONSOLE_MENU_MAIN = "Options:\n1. View Planet Stats\n2. Build\n3. Upgrade Technology\n4. View Battle Reports\n0. Exit";
-	public final String CONSOLE_MENU_MAIN_THREAT = "Options:\n1. View Planet Stats\n2. Build\n3. Upgrade Technology\n4. View Battle Reports\n5. View Threat\n0. Exit";
+	public final String CONSOLE_MENU_MAIN = "Options:\n1. View Planet Stats\n2. Build\n3. Upgrade Technology\n4. View Battle Reports\n5. View Threat\n0. Exit";
 	public final String CONSOLE_MENU_UPGRADE_TECH = "Which technology do you wish to upgrade?\n1. Attack (%d Deuterium)\n2. Defense (%d Deuterium)\n0. Cancel";
 	public final String CONSOLE_MENU_BUILD_UNIT = "Which unit do you wish to build?\n1. Light Hunter\n2. Heavy Hunter\n3. Battleship\n4. Armored Ship\n5. Missile Launcher\n6. Ion Cannon\n7. Plasma Cannon\n0. Cancel";
 	public final String CONSOLE_MENU_BUILD_AMOUNT = "How many? (1-999) (0. Cancel)";
