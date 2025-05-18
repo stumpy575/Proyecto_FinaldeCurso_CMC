@@ -16,7 +16,8 @@ public class Main {
 		} else {
 			consoleMode = false;
 			System.out.println("Starting game...");
-			GraphicalUI.start();
+			GraphicalUI graphical_ui = new GraphicalUI();
+			graphical_ui.start();
 		}
 	}
 

@@ -14,13 +14,23 @@ import java.io.IOException;
 import java.net.URL;
 
 public class GraphicalUI extends JFrame implements Variables {
-	Planet planet= new Planet(0,0,PLANET_STARTING_METAL,PLANET_STARTING_DEUTERIUM);
+	Game game;
     private JProgressBar progressBar;
     private JPanel attackPanel;
     private JPanel[] enemyPanels = new JPanel[4];
     private JPanel enemigoPanel;
     private JLabel radarLabel;
     
+    private JLabel infometal;
+    private JLabel infodeuterium;
+    private JLabel datalabel_lighthunter;
+    private JLabel datalabel_heavyhunter;
+    private JLabel datalabel_armoredship;
+    private JLabel datalabel_battleship;
+    private JLabel datalabel_missilelauncher;
+    private JLabel datalabel_ioncannon;
+    private JLabel datalabel_plasmacannon;
+    private JLabel[] datalabel_units = {datalabel_lighthunter, datalabel_heavyhunter, datalabel_armoredship, datalabel_battleship, datalabel_missilelauncher, datalabel_ioncannon, datalabel_plasmacannon};
 
     public GraphicalUI() {
         setTitle("The Great Space Wars!");
@@ -36,7 +46,7 @@ public class GraphicalUI extends JFrame implements Variables {
         menuBar.add(optionsmenu);
         setJMenuBar(menuBar);
 
-        // Panel prinipal
+        // Panel principal
         JPanel mainPanel = new JPanel(new GridLayout(2, 2, 10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         add(mainPanel);
@@ -67,8 +77,8 @@ public class GraphicalUI extends JFrame implements Variables {
         JButton boton_upgrade_attack = new JButton(arrowup);
         
         JPanel infoPanel = new JPanel(new GridLayout(4, 2, 5, 5));
-        JLabel infometal= new JLabel("Metal: "+planet.getMetal());
-        JLabel infodeuterium= new JLabel("Deuterium: " + planet.getDeuterium());
+        infometal = new JLabel("Metal: "+game.getPlanet().getMetal());
+        infodeuterium = new JLabel("Deuterium: " + game.getPlanet().getDeuterium());
 
         infoPanel.add(infometal);
         infoPanel.add(new JLabel());
@@ -76,8 +86,8 @@ public class GraphicalUI extends JFrame implements Variables {
         infoPanel.add(new JLabel());
         
         //Se meten los botones en paneles de flowlayout para que no ocupen todo el grid y que estén bonitos
-        JLabel infotechattack= new JLabel("Attack Tech: " + planet.getTechnologyAttack());
-        JLabel infotechdefense= new JLabel("Defense Tech: " + planet.getTechnologyDefense());
+        JLabel infotechattack= new JLabel("Attack Tech: " + game.getPlanet().getTechnologyAttack());
+        JLabel infotechdefense= new JLabel("Defense Tech: " + game.getPlanet().getTechnologyDefense());
         infoPanel.add(infotechattack);
         JPanel contattack = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         contattack.add(boton_upgrade_attack);
@@ -116,19 +126,19 @@ public class GraphicalUI extends JFrame implements Variables {
         unitsattackPanel.add(labelImgArmoredShip);
 
  
-        JLabel datalabel_lighthunter = new JLabel("Light Hunter: "+planet.getArmy()[0].size());
+        datalabel_lighthunter = new JLabel("Light Hunter: "+game.getPlanet().getArmy()[0].size());
         datalabel_lighthunter.setHorizontalAlignment(SwingConstants.CENTER);
         unitsattackPanel.add(datalabel_lighthunter);
 
-        JLabel datalabel_heavyhunter = new JLabel("Heavy Hunter: "+planet.getArmy()[1].size());
+        datalabel_heavyhunter = new JLabel("Heavy Hunter: "+game.getPlanet().getArmy()[1].size());
         datalabel_heavyhunter.setHorizontalAlignment(SwingConstants.CENTER);
         unitsattackPanel.add(datalabel_heavyhunter);
 
-        JLabel datalabel_battleship= new JLabel("Battleship: "+planet.getArmy()[2].size());
+        datalabel_battleship = new JLabel("Battleship: "+game.getPlanet().getArmy()[2].size());
         datalabel_battleship.setHorizontalAlignment(SwingConstants.CENTER);
         unitsattackPanel.add(datalabel_battleship);
 
-        JLabel datalabel_armoredship= new JLabel("Armored Ship: "+planet.getArmy()[3].size());
+        datalabel_armoredship= new JLabel("Armored Ship: "+game.getPlanet().getArmy()[3].size());
         datalabel_armoredship.setHorizontalAlignment(SwingConstants.CENTER);
         unitsattackPanel.add(datalabel_armoredship);
 
@@ -147,19 +157,18 @@ public class GraphicalUI extends JFrame implements Variables {
         ImageIcon img_plasmacannon = new ImageIcon(getClass().getResource("../imagenes/plasmacannon.png"));
         JLabel labelImgPlasmaCannon = new JLabel(img_plasmacannon);
         unitsdefensePanel.add(labelImgPlasmaCannon);
+        
+        datalabel_missilelauncher = new JLabel("Missile Launcher: "+game.getPlanet().getArmy()[4].size());
+        datalabel_missilelauncher.setHorizontalAlignment(SwingConstants.CENTER);
+        unitsdefensePanel.add(datalabel_missilelauncher);
 
+        datalabel_ioncannon = new JLabel("Ion Cannon: "+game.getPlanet().getArmy()[5].size());
+        datalabel_ioncannon.setHorizontalAlignment(SwingConstants.CENTER);
+        unitsdefensePanel.add(datalabel_ioncannon);
 
-//        JLabel label_missile = new JLabel("Missile Launcher: "+planet.getArmy()[4].size());
-//        label_missile.setHorizontalAlignment(SwingConstants.CENTER);
-//        unitsdefensePanel.add(label_missile);
-//
-//        JLabel label_ion = new JLabel("Ion Cannon: "+planet.getArmy()[5].size());
-//        label_ion.setHorizontalAlignment(SwingConstants.CENTER);
-//        unitsdefensePanel.add(label_ion);
-//
-//        JLabel label_plasma = new JLabel("Plasma Cannon: "+planet.getArmy()[6].size());
-//        label_plasma.setHorizontalAlignment(SwingConstants.CENTER);
-//        unitsdefensePanel.add(label_plasma);
+        datalabel_plasmacannon = new JLabel("Plasma Cannon: "+game.getPlanet().getArmy()[6].size());
+        datalabel_plasmacannon.setHorizontalAlignment(SwingConstants.CENTER);
+        unitsdefensePanel.add(datalabel_plasmacannon);
 
         unitsPanel.add(unitsattackPanel, BorderLayout.NORTH);
         unitsPanel.add(unitsdefensePanel, BorderLayout.SOUTH);
@@ -222,9 +231,9 @@ public class GraphicalUI extends JFrame implements Variables {
       		boton_upgrade_attack.addActionListener(new ActionListener() {
       			public void actionPerformed(ActionEvent e) {
       				try {
-      					planet.upgradeTechnologyAttack();
-      					infotechattack.setText("Attack Tech: " + planet.getTechnologyAttack());
-      					infodeuterium.setText("Deuterium: "+ planet.getDeuterium());
+      					game.getPlanet().upgradeTechnologyAttack();
+      					infotechattack.setText("Attack Tech: " + game.getPlanet().getTechnologyAttack());
+      					infodeuterium.setText("Deuterium: "+ game.getPlanet().getDeuterium());
       					
       				} catch (ResourceException e1) {
       					// TODO Auto-generated catch block
@@ -238,9 +247,9 @@ public class GraphicalUI extends JFrame implements Variables {
       		boton_upgrade_defense.addActionListener(new ActionListener() {
       			public void actionPerformed(ActionEvent e) {
       				try {
-      					planet.upgradeTechnologyDefense();
-      					infotechdefense.setText("Defense Tech: " + planet.getTechnologyDefense());
-      					infodeuterium.setText("Deuterium: "+ planet.getDeuterium());
+      					game.getPlanet().upgradeTechnologyDefense();
+      					infotechdefense.setText("Defense Tech: " + game.getPlanet().getTechnologyDefense());
+      					infodeuterium.setText("Deuterium: "+ game.getPlanet().getDeuterium());
       					
       				} catch (ResourceException e1) {
       					// TODO Auto-generated catch block
@@ -251,252 +260,42 @@ public class GraphicalUI extends JFrame implements Variables {
       		});
       		labelImgLightHunter.addMouseListener(new MouseAdapter() {
       		    public void mouseClicked(MouseEvent e) {
-      		        String input = JOptionPane.showInputDialog(null, "How many Light Hunters do you want to create?");
-      		        if (input != null) {
-      		            try {
-      		                int n = Integer.parseInt(input);
-      		                int metalCost = METAL_COST_LIGTHHUNTER * n;
-      		                int deuteriumCost = DEUTERIUM_COST_LIGTHHUNTER * n;
-
-      		                int opcion = JOptionPane.showConfirmDialog(
-      		                    null,
-      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
-      		                    "Confirm Creation",
-      		                    JOptionPane.YES_NO_OPTION,
-      		                    JOptionPane.WARNING_MESSAGE
-      		                );
-
-      		                if (opcion == JOptionPane.YES_OPTION) {
-      		                    try {
-      		                        planet.newLightHunter(n);
-      		                    } catch (ResourceException ex) {
-      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
-      		                    }
-      		                }
-
-      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
-      		                infometal.setText("Metal: " + planet.getMetal());
-      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
-
-      		            } catch (NumberFormatException ex) {
-      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
-      		            }
-      		        }
+      		        build(0);
       		    }
       		});
 
       		labelImgHeavyHunter.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      		        String input = JOptionPane.showInputDialog(null, "How many Heavy Hunters do you want to create?");
-      		        if (input != null) {
-      		            try {
-      		                int n = Integer.parseInt(input);
-      		                int metalCost = METAL_COST_HEAVYHUNTER * n;
-      		                int deuteriumCost = DEUTERIUM_COST_HEAVYHUNTER * n;
-
-      		                int opcion = JOptionPane.showConfirmDialog(
-      		                    null,
-      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
-      		                    "Confirm Creation",
-      		                    JOptionPane.YES_NO_OPTION,
-      		                    JOptionPane.WARNING_MESSAGE
-      		                );
-
-      		                if (opcion == JOptionPane.YES_OPTION) {
-      		                    try {
-      		                        planet.newLightHunter(n);
-      		                    } catch (ResourceException ex) {
-      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
-      		                    }
-      		                }
-
-      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
-      		                infometal.setText("Metal: " + planet.getMetal());
-      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
-
-      		            } catch (NumberFormatException ex) {
-      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
-      		            }
-      		        }
+      		        build(1);
       			}
       		});
       		labelImgArmoredShip.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      		        String input = JOptionPane.showInputDialog(null, "How many Armored Ships do you want to create?");
-      		        if (input != null) {
-      		            try {
-      		                int n = Integer.parseInt(input);
-      		                int metalCost = METAL_COST_ARMOREDSHIP * n;
-      		                int deuteriumCost = DEUTERIUM_COST_ARMOREDSHIP * n;
-
-      		                int opcion = JOptionPane.showConfirmDialog(
-      		                    null,
-      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
-      		                    "Confirm Creation",
-      		                    JOptionPane.YES_NO_OPTION,
-      		                    JOptionPane.WARNING_MESSAGE
-      		                );
-
-      		                if (opcion == JOptionPane.YES_OPTION) {
-      		                    try {
-      		                        planet.newLightHunter(n);
-      		                    } catch (ResourceException ex) {
-      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
-      		                    }
-      		                }
-
-      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
-      		                infometal.setText("Metal: " + planet.getMetal());
-      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
-
-      		            } catch (NumberFormatException ex) {
-      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
-      		            }
-      		        }
+      		        build(2);
       			}
       		});
       		labelImgBattleship.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      		        String input = JOptionPane.showInputDialog(null, "How many Battleships do you want to create?");
-      		        if (input != null) {
-      		            try {
-      		                int n = Integer.parseInt(input);
-      		                int metalCost = METAL_COST_BATTLESHIP * n;
-      		                int deuteriumCost = DEUTERIUM_COST_BATTLESHIP * n;
-
-      		                int opcion = JOptionPane.showConfirmDialog(
-      		                    null,
-      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
-      		                    "Confirm Creation",
-      		                    JOptionPane.YES_NO_OPTION,
-      		                    JOptionPane.WARNING_MESSAGE
-      		                );
-
-      		                if (opcion == JOptionPane.YES_OPTION) {
-      		                    try {
-      		                        planet.newLightHunter(n);
-      		                    } catch (ResourceException ex) {
-      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
-      		                    }
-      		                }
-
-      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
-      		                infometal.setText("Metal: " + planet.getMetal());
-      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
-
-      		            } catch (NumberFormatException ex) {
-      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
-      		            }
-      		        }
+      		        build(3);
       			}
       		});
       		labelImgMissileLauncher.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      		        String input = JOptionPane.showInputDialog(null, "How many Missile Launchers do you want to create?");
-      		        if (input != null) {
-      		            try {
-      		                int n = Integer.parseInt(input);
-      		                int metalCost = METAL_COST_MISSILELAUNCHER * n;
-      		                int deuteriumCost = DEUTERIUM_COST_MISSILELAUNCHER * n;
-
-      		                int opcion = JOptionPane.showConfirmDialog(
-      		                    null,
-      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
-      		                    "Confirm Creation",
-      		                    JOptionPane.YES_NO_OPTION,
-      		                    JOptionPane.WARNING_MESSAGE
-      		                );
-
-      		                if (opcion == JOptionPane.YES_OPTION) {
-      		                    try {
-      		                        planet.newLightHunter(n);
-      		                    } catch (ResourceException ex) {
-      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
-      		                    }
-      		                }
-
-      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
-      		                infometal.setText("Metal: " + planet.getMetal());
-      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
-
-      		            } catch (NumberFormatException ex) {
-      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
-      		            }
-      		        }
+      		        build(4);
       			}
       		});
       		labelImgIonCannon.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      		        String input = JOptionPane.showInputDialog(null, "How many Ion Cannons do you want to create?");
-      		        if (input != null) {
-      		            try {
-      		                int n = Integer.parseInt(input);
-      		                int metalCost = METAL_COST_IONCANNON * n;
-      		                int deuteriumCost = DEUTERIUM_COST_IONCANNON * n;
-
-      		                int opcion = JOptionPane.showConfirmDialog(
-      		                    null,
-      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
-      		                    "Confirm Creation",
-      		                    JOptionPane.YES_NO_OPTION,
-      		                    JOptionPane.WARNING_MESSAGE
-      		                );
-
-      		                if (opcion == JOptionPane.YES_OPTION) {
-      		                    try {
-      		                        planet.newLightHunter(n);
-      		                    } catch (ResourceException ex) {
-      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
-      		                    }
-      		                }
-
-      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
-      		                infometal.setText("Metal: " + planet.getMetal());
-      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
-
-      		            } catch (NumberFormatException ex) {
-      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
-      		            }
-      		        }
+      				build(5);
       			}
       		});
       		labelImgPlasmaCannon.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      		        String input = JOptionPane.showInputDialog(null, "How many Plasma Cannons do you want to create?");
-      		        if (input != null) {
-      		            try {
-      		                int n = Integer.parseInt(input);
-      		                int metalCost = METAL_COST_PLASMACANNON * n;
-      		                int deuteriumCost = DEUTERIUM_COST_PLASMACANNON * n;
-
-      		                int opcion = JOptionPane.showConfirmDialog(
-      		                    null,
-      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
-      		                    "Confirm Creation",
-      		                    JOptionPane.YES_NO_OPTION,
-      		                    JOptionPane.WARNING_MESSAGE
-      		                );
-
-      		                if (opcion == JOptionPane.YES_OPTION) {
-      		                    try {
-      		                        planet.newLightHunter(n);
-      		                    } catch (ResourceException ex) {
-      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
-      		                    }
-      		                }
-
-      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
-      		                infometal.setText("Metal: " + planet.getMetal());
-      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
-
-      		            } catch (NumberFormatException ex) {
-      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
-      		            }
-      		        }
+      		        build(6);
       			}
       		});
               
-      		int[] clickcount= {0};
+      		int[] clickcount = {0};
       		planetImage.addMouseListener(new MouseAdapter() {
       			public void mouseClicked(MouseEvent e) {
       				clickcount[0]++;
@@ -512,11 +311,45 @@ public class GraphicalUI extends JFrame implements Variables {
       				}
       			}
       		});
-      		iniciarCuentaAtrasBarra();
+      		startEnemyTimer();
       	
     }
     
-    public void iniciarCuentaAtrasBarra() {
+    private void build(int unitType) {
+        String input = JOptionPane.showInputDialog(null, "How many "+UNIT_NAMES[unitType]+"s do you want to create?");
+        if (input != null) {
+            try {
+                int n = Integer.parseInt(input);
+                int metalCost = METAL_COST_UNITS[unitType] * n;
+                int deuteriumCost = DEUTERIUM_COST_UNITS[unitType] * n;
+
+                int opcion = JOptionPane.showConfirmDialog(
+                    null,
+                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
+                    "Confirm Creation",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+                );
+
+                if (opcion == JOptionPane.YES_OPTION) {
+                    try {
+                        game.build(unitType, n);
+                    } catch (ResourceException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+
+                infodeuterium.setText("Deuterium: " + game.getPlanet().getDeuterium());
+                infometal.setText("Metal: " + game.getPlanet().getMetal());
+                datalabel_units[unitType].setText(UNIT_NAMES[unitType]+": " + game.getPlanet().getArmy()[0].size());
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    public void startEnemyTimer() {
         Timer timer = new Timer(100, null);
         final int[] progreso = {0};
         final int[] oleada = {1};
@@ -531,18 +364,19 @@ public class GraphicalUI extends JFrame implements Variables {
             progressBar.setString(progreso[0] + " %");
 
             if (progreso[0] >= 50 && !enemigosCargados[0]) {
-                cl.show(attackPanel, "ENEMIGOS");
+                game.createEnemyArmy();
+            	
+            	cl.show(attackPanel, "ENEMIGOS");
 
                 // Mostrar aviso de detección
                 JOptionPane.showMessageDialog(this, "¡Detectando enemigos!", "Alerta", JOptionPane.WARNING_MESSAGE);
 
                 String[] rutas = {"/imagenes/lighthunter.png","/imagenes/heavyhunter.png","/imagenes/battleship.png", "/imagenes/armoredship.png"};
-                String[] nombres = {"Light Hunter: 30","Heavy Hunter: 20","Battleship: 15","Armored Ship: 10"};
 
                 for (int i = 0; i < 4; i++) {
                     enemyPanels[i].removeAll();
                     JLabel img = new JLabel(new ImageIcon(getClass().getResource(rutas[i])));
-                    JLabel txt = new JLabel(nombres[i]);
+                    JLabel txt = new JLabel(UNIT_NAMES[i]+": "+game.getEnemy_army()[i].size());
                     img.setAlignmentX(Component.CENTER_ALIGNMENT);
                     txt.setAlignmentX(Component.CENTER_ALIGNMENT);
                     enemyPanels[i].add(Box.createVerticalGlue());
@@ -556,12 +390,12 @@ public class GraphicalUI extends JFrame implements Variables {
 
                 enemigosCargados[0] = true;
             }
-
-
-
+            
             // Reiniciar al 100%
             if (progreso[0] >= 100) {
-                progreso[0] = 0;
+            	game.initBattle();
+
+            	progreso[0] = 0;
                 radarOculto[0] = false;
                 enemigosCargados[0] = false;
 
@@ -575,19 +409,21 @@ public class GraphicalUI extends JFrame implements Variables {
                 oleada[0]++;
                 JOptionPane.showMessageDialog(
                     this,
-                    "¡Prepárate para la batalla!",
+                    "A battle has ensued!",
                     "Warning",
                     JOptionPane.WARNING_MESSAGE
                 );
             }
         });
 
-//        timer.start();
+        timer.start();
         setVisible(true);
     }
 
 
-    public static void start() {
+    public void start() {
+    	game = new Game();
+    	game.start();
         new GraphicalUI();
     }
 }

@@ -3,12 +3,13 @@ package proyectoFinal;
 import java.util.Scanner;
 
 public class ConsoleUI implements Variables {
-	Game game = new Game();
+	private Game game;
 	private enum menu_types {
 		MAIN, PLANET_STATS, BUILD_UNIT, BUILD_AMOUNT, UPGRADE_TECH, BATTLE_REPORTS
 	}
 	
 	public void start() {
+		game = new Game();
 		game.start();
 		
 		Scanner sc = new Scanner(System.in);
@@ -118,7 +119,7 @@ public class ConsoleUI implements Variables {
 			return;
 		}
 		try {
-			game.build(unit, unit_amount);
+			game.build(unit-1, unit_amount);
 		} catch (ResourceException e) {
 			System.out.println(e.toString().substring(e.toString().indexOf("[")));
 		}
