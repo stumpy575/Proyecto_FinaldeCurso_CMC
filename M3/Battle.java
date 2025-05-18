@@ -48,31 +48,11 @@ public class Battle implements Variables{
 	public void performBattle() {
 		initInitialArmies();
 		
-		// TODO debug
-		for (int i = 0; i < armies[0].length; i++) {
-			System.out.println("Planet army+"+i+": "+armies[0][i].size());
-		}
-		for (int i = 0; i < armies[1].length; i++) {
-			if (armies[1][i] != null) {
-				System.out.println("Enemy army+"+i+": "+armies[1][i].size());
-			}
-		}
-		// TODO debug
-		
-		
 		log("BATTLE START");
 		int atkArmy = (int) (2*Math.random());
 		int defArmy = (atkArmy+1)%2;
-		//TODO debug
-		System.out.println("atkArmy:"+atkArmy);
-		System.out.println("defArmy:"+defArmy);
-		// TODO debug
 		while (!doesBattleEnd()) {
 			performTurn(atkArmy, defArmy);
-			//TODO debug
-			System.out.println("atkArmy:"+atkArmy);
-			System.out.println("defArmy:"+defArmy);
-			// TODO debug
 			defArmy = atkArmy;
 			atkArmy = (defArmy+1)%2;
 		}
@@ -87,15 +67,15 @@ public class Battle implements Variables{
 			armies[0][i] = planetArmy[i];
 			initialNumberUnitsPlanet[i] = planetArmy[i].size();
 			initialSumUnitsPlanet += planetArmy[i].size();
-			initialCostFleet[0][0] = METAL_COST_UNITS[i]*planetArmy[i].size();
-			initialCostFleet[0][1] = DEUTERIUM_COST_UNITS[i]*planetArmy[i].size();
+			initialCostFleet[0][0] += METAL_COST_UNITS[i]*planetArmy[i].size();
+			initialCostFleet[0][1] += DEUTERIUM_COST_UNITS[i]*planetArmy[i].size();
 		}
 		for (int i = 0; i < enemyArmy.length; i++) {
 			armies[1][i] = enemyArmy[i];
 			initialNumberUnitsEnemy[i] = enemyArmy[i].size();
 			initialSumUnitsEnemy += enemyArmy[i].size();
-			initialCostFleet[1][0] = METAL_COST_UNITS[i]*planetArmy[i].size();
-			initialCostFleet[1][1] = DEUTERIUM_COST_UNITS[i]*planetArmy[i].size();
+			initialCostFleet[1][0] += METAL_COST_UNITS[i]*enemyArmy[i].size();
+			initialCostFleet[1][1] += DEUTERIUM_COST_UNITS[i]*enemyArmy[i].size();
 		}
 		for (int i = 4; i < armies[1].length; i++) {
 			armies[1][i] = new ArrayList<MilitaryUnit>();
@@ -108,17 +88,21 @@ public class Battle implements Variables{
 	
 	private boolean doesBattleEnd() {
 		if (initialSumUnitsPlanet == 0) {
-			log("Planet has no units");
+			log("The planet is undefended");
 			return true;
 		} else if (100*currentSumUnitsPlanet/initialSumUnitsPlanet < PERCENTAGE_UNITS_BATTLE_END_THRESHOLD) {
-			// TODO debug
-			System.out.println("currentSumUnitsPlanet: "+currentSumUnitsPlanet);
-			System.out.println("initialSumUnitsPlanet: "+initialSumUnitsPlanet);
-			// TODO debug
-			log("Planet has lost the vast majority of its units");
+			if (currentSumUnitsEnemy == 0) {
+				log("The planet army has lost all of its units");
+			} else {
+				log("The planet army has lost the vast majority of its units");
+			}
 			return true;
 		} else if (100*currentSumUnitsEnemy/initialSumUnitsEnemy < PERCENTAGE_UNITS_BATTLE_END_THRESHOLD) {
-			log("Enemy has lost the vast majority of its units");
+			if (currentSumUnitsEnemy == 0) {
+				log("The enemy army has lost all of its units");
+			} else {
+				log("The enemy army has lost the vast majority of its units");
+			}
 			return true;
 		}
 		return false;
@@ -160,18 +144,13 @@ public class Battle implements Variables{
 			}
 			int defGroup = selectRandomDefenseGroup(defArmy);
 			int defUnit = (int) (armies[defArmy][defGroup].size()*Math.random());
-			// TODO debug
-			System.out.println("atkGroup: "+atkGroup);
-			System.out.println("defGroup: "+defGroup);
-			// TODO debug
-			
 			
 			log(UNIT_NAMES[atkGroup]+" #"+(atkUnit+1)+" attacks "+UNIT_NAMES[defGroup]+" #"+(defUnit+1));
 			
 			int damage = armies[atkArmy][atkGroup].get(atkUnit).attack();
 			armies[defArmy][defGroup].get(defUnit).takeDamage(damage);
-			log(UNIT_NAMES[atkGroup]+" deals "+damage+" damage");
-			log(UNIT_NAMES[defGroup]+" is left with "+armies[defArmy][defGroup].get(defUnit).getCurrentArmor()+" armor");
+			log(UNIT_NAMES[atkGroup]+" #"+(atkUnit+1)+" deals "+damage+" damage");
+			log(UNIT_NAMES[defGroup]+" #"+(defUnit+1)+" is left with "+armies[defArmy][defGroup].get(defUnit).getCurrentArmor()+" armor");
 			
 			if (armies[defArmy][defGroup].get(defUnit).getCurrentArmor() <= 0) {
 				generateWaste(defGroup);
@@ -185,7 +164,7 @@ public class Battle implements Variables{
 					currentSumUnitsEnemy -= 1;
 					enemyDrops[defGroup] += 1;
 				}
-				log(UNIT_NAMES[defGroup]+" has been defeated");
+				log(UNIT_NAMES[defGroup]+" #"+(defUnit+1)+" has been defeated");
 			}
 		} while(doesUnitAttackAgain(atkGroup));
 		log("");
@@ -202,9 +181,9 @@ public class Battle implements Variables{
 	private int selectRandomAttackGroup(int atkArmy) {
 		int[] chanceArray;
 		if (atkArmy == 0) {
-			chanceArray = CHANCE_ATTACK_PLANET_UNITS;
+			chanceArray = CHANCE_ATTACK_PLANET_UNITS.clone();
 		} else {
-			chanceArray = CHANCE_ATTACK_ENEMY_UNITS;
+			chanceArray = CHANCE_ATTACK_ENEMY_UNITS.clone();
 		}
 		for (int i = 0; i < chanceArray.length; i++) {
 			if (armies[atkArmy][i].size() == 0) {
@@ -220,9 +199,6 @@ public class Battle implements Variables{
 		for (int i = 0; i < army.length; i++) {
 			chanceArray[i] = army[i].size();
 		}
-		// TODO debug
-		System.out.println(Arrays.toString(chanceArray));
-		// TODO debug
 		return selectGroup(chanceArray);
 	}
 	
