@@ -285,36 +285,214 @@ public class GraphicalUI extends JFrame implements Variables {
       		    }
       		});
 
-
-
       		labelImgHeavyHunter.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      				
+      		        String input = JOptionPane.showInputDialog(null, "How many Heavy Hunters do you want to create?");
+      		        if (input != null) {
+      		            try {
+      		                int n = Integer.parseInt(input);
+      		                int metalCost = METAL_COST_HEAVYHUNTER * n;
+      		                int deuteriumCost = DEUTERIUM_COST_HEAVYHUNTER * n;
+
+      		                int opcion = JOptionPane.showConfirmDialog(
+      		                    null,
+      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
+      		                    "Confirm Creation",
+      		                    JOptionPane.YES_NO_OPTION,
+      		                    JOptionPane.WARNING_MESSAGE
+      		                );
+
+      		                if (opcion == JOptionPane.YES_OPTION) {
+      		                    try {
+      		                        planet.newLightHunter(n);
+      		                    } catch (ResourceException ex) {
+      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
+      		                    }
+      		                }
+
+      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
+      		                infometal.setText("Metal: " + planet.getMetal());
+      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
+
+      		            } catch (NumberFormatException ex) {
+      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
+      		            }
+      		        }
       			}
       		});
       		labelImgArmoredShip.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      				
+      		        String input = JOptionPane.showInputDialog(null, "How many Armored Ships do you want to create?");
+      		        if (input != null) {
+      		            try {
+      		                int n = Integer.parseInt(input);
+      		                int metalCost = METAL_COST_ARMOREDSHIP * n;
+      		                int deuteriumCost = DEUTERIUM_COST_ARMOREDSHIP * n;
+
+      		                int opcion = JOptionPane.showConfirmDialog(
+      		                    null,
+      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
+      		                    "Confirm Creation",
+      		                    JOptionPane.YES_NO_OPTION,
+      		                    JOptionPane.WARNING_MESSAGE
+      		                );
+
+      		                if (opcion == JOptionPane.YES_OPTION) {
+      		                    try {
+      		                        planet.newLightHunter(n);
+      		                    } catch (ResourceException ex) {
+      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
+      		                    }
+      		                }
+
+      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
+      		                infometal.setText("Metal: " + planet.getMetal());
+      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
+
+      		            } catch (NumberFormatException ex) {
+      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
+      		            }
+      		        }
       			}
       		});
       		labelImgBattleship.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      				
+      		        String input = JOptionPane.showInputDialog(null, "How many Battleships do you want to create?");
+      		        if (input != null) {
+      		            try {
+      		                int n = Integer.parseInt(input);
+      		                int metalCost = METAL_COST_BATTLESHIP * n;
+      		                int deuteriumCost = DEUTERIUM_COST_BATTLESHIP * n;
+
+      		                int opcion = JOptionPane.showConfirmDialog(
+      		                    null,
+      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
+      		                    "Confirm Creation",
+      		                    JOptionPane.YES_NO_OPTION,
+      		                    JOptionPane.WARNING_MESSAGE
+      		                );
+
+      		                if (opcion == JOptionPane.YES_OPTION) {
+      		                    try {
+      		                        planet.newLightHunter(n);
+      		                    } catch (ResourceException ex) {
+      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
+      		                    }
+      		                }
+
+      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
+      		                infometal.setText("Metal: " + planet.getMetal());
+      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
+
+      		            } catch (NumberFormatException ex) {
+      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
+      		            }
+      		        }
       			}
       		});
       		labelImgMissileLauncher.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      				
+      		        String input = JOptionPane.showInputDialog(null, "How many Missile Launchers do you want to create?");
+      		        if (input != null) {
+      		            try {
+      		                int n = Integer.parseInt(input);
+      		                int metalCost = METAL_COST_MISSILELAUNCHER * n;
+      		                int deuteriumCost = DEUTERIUM_COST_MISSILELAUNCHER * n;
+
+      		                int opcion = JOptionPane.showConfirmDialog(
+      		                    null,
+      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
+      		                    "Confirm Creation",
+      		                    JOptionPane.YES_NO_OPTION,
+      		                    JOptionPane.WARNING_MESSAGE
+      		                );
+
+      		                if (opcion == JOptionPane.YES_OPTION) {
+      		                    try {
+      		                        planet.newLightHunter(n);
+      		                    } catch (ResourceException ex) {
+      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
+      		                    }
+      		                }
+
+      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
+      		                infometal.setText("Metal: " + planet.getMetal());
+      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
+
+      		            } catch (NumberFormatException ex) {
+      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
+      		            }
+      		        }
       			}
       		});
       		labelImgIonCannon.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      				
+      		        String input = JOptionPane.showInputDialog(null, "How many Ion Cannons do you want to create?");
+      		        if (input != null) {
+      		            try {
+      		                int n = Integer.parseInt(input);
+      		                int metalCost = METAL_COST_IONCANNON * n;
+      		                int deuteriumCost = DEUTERIUM_COST_IONCANNON * n;
+
+      		                int opcion = JOptionPane.showConfirmDialog(
+      		                    null,
+      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
+      		                    "Confirm Creation",
+      		                    JOptionPane.YES_NO_OPTION,
+      		                    JOptionPane.WARNING_MESSAGE
+      		                );
+
+      		                if (opcion == JOptionPane.YES_OPTION) {
+      		                    try {
+      		                        planet.newLightHunter(n);
+      		                    } catch (ResourceException ex) {
+      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
+      		                    }
+      		                }
+
+      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
+      		                infometal.setText("Metal: " + planet.getMetal());
+      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
+
+      		            } catch (NumberFormatException ex) {
+      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
+      		            }
+      		        }
       			}
       		});
       		labelImgPlasmaCannon.addMouseListener(new MouseAdapter( ) {
       			public void mouseClicked(MouseEvent e) {
-      				
+      		        String input = JOptionPane.showInputDialog(null, "How many Plasma Cannons do you want to create?");
+      		        if (input != null) {
+      		            try {
+      		                int n = Integer.parseInt(input);
+      		                int metalCost = METAL_COST_PLASMACANNON * n;
+      		                int deuteriumCost = DEUTERIUM_COST_PLASMACANNON * n;
+
+      		                int opcion = JOptionPane.showConfirmDialog(
+      		                    null,
+      		                    "This will cost:\nMetal: " + metalCost + "\nDeuterium: " + deuteriumCost + "\n\nCreate?",
+      		                    "Confirm Creation",
+      		                    JOptionPane.YES_NO_OPTION,
+      		                    JOptionPane.WARNING_MESSAGE
+      		                );
+
+      		                if (opcion == JOptionPane.YES_OPTION) {
+      		                    try {
+      		                        planet.newLightHunter(n);
+      		                    } catch (ResourceException ex) {
+      		                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
+      		                    }
+      		                }
+
+      		                infodeuterium.setText("Deuterium: " + planet.getDeuterium());
+      		                infometal.setText("Metal: " + planet.getMetal());
+      		                datalabel_lighthunter.setText("Light hunter: " + planet.getArmy()[0].size());
+
+      		            } catch (NumberFormatException ex) {
+      		                JOptionPane.showMessageDialog(null, "Invalid number entered.", "Error", JOptionPane.ERROR_MESSAGE);
+      		            }
+      		        }
       			}
       		});
               
@@ -335,8 +513,9 @@ public class GraphicalUI extends JFrame implements Variables {
       			}
       		});
       		iniciarCuentaAtrasBarra();
+      	
     }
-
+    
     public void iniciarCuentaAtrasBarra() {
         Timer timer = new Timer(100, null);
         final int[] progreso = {0};
