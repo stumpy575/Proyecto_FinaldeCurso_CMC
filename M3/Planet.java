@@ -88,14 +88,14 @@ public class Planet implements Variables {
 		}
 	}
 	
-	private void checkEnoughResourcesToBuild(int n, int unitType) throws ResourceException {
+	private int checkEnoughResourcesToBuild(int n, int unitType) throws ResourceException {
 		int metal_cost = METAL_COST_UNITS[unitType];
 		int deuterium_cost = DEUTERIUM_COST_UNITS[unitType];
+		int n_possible = n;
 		if (metal<metal_cost*n || deuterium<deuterium_cost*n) {
-			int n_possible = n;
-			int n_possible_metal = (int) (metal/METAL_COST_UNITS[unitType]);
-			if (DEUTERIUM_COST_UNITS[unitType] > 0) {
-				int n_possible_deuterium = (int) (deuterium/DEUTERIUM_COST_UNITS[unitType]);
+			int n_possible_metal = (int) (metal/metal_cost);
+			if (deuterium_cost > 0) {
+				int n_possible_deuterium = (int) (deuterium/deuterium_cost);
 				if (n_possible_metal < n_possible_deuterium) {
 					n_possible = n_possible_metal;
 				} else {
@@ -104,12 +104,8 @@ public class Planet implements Variables {
 			} else {
 				n_possible = n_possible_metal;
 			}
-			if (n_possible == 0) {
-				throw new ResourceException("[!] Not enough resources for any "+UNIT_NAMES[unitType]+"s.");
-			} else {
-				throw new ResourceException("[!] Not enough resources. Only "+n_possible+" "+UNIT_NAMES[unitType]+"s will be built.");
-			}
 		}
+		return n_possible;
 	}
 	
 	private void addMilitaryUnit(int unitType, int armor, int attack) {
@@ -138,69 +134,51 @@ public class Planet implements Variables {
 		}
 		
 	}
-	//igual es un poco guarrada esto pero estoy cansado ya de que no pueda coger la excepcion
-	private String lastBuildMessage = "";
-
-	public String getLastBuildMessage() {
-		return lastBuildMessage;
-	}
 	
-	private void newMilitaryUnit(int n, int unitType) {
-		int count = 0;
-		lastBuildMessage="";
-		
-		for (int i = 0; i < n; i++) {
-			try {
-				checkEnoughResourcesToBuild(1, unitType);
-				count++;
-			} catch (ResourceException e) {
-				if (count == 0) {
-					lastBuildMessage = e.getMessage(); // excepcion de que no se cree ninguna
-				} else {
-					lastBuildMessage = "[!] Not enough resources. Only " + count + " " + UNIT_NAMES[unitType] + "s will be built.";
-				}
-				break;
-			}
-
+	private void newMilitaryUnit(int n, int unitType) throws ResourceException {
+		int n_possible = checkEnoughResourcesToBuild(n, unitType);
+		for (int i = 0; i<n_possible; i++) {
 			final int armor = (int) (ARMOR_UNITS[unitType]*(100+technologyDefense*PLUS_ARMOR_UNITS_BY_TECHNOLOGY[unitType])/100);
 			final int attack = (int) (BASE_DAMAGE_UNITS[unitType]*(100+technologyAttack*PLUS_ATTACK_UNITS_BY_TECHNOLOGY[unitType])/100);
 			addMilitaryUnit(unitType, armor, attack);
 			metal -= METAL_COST_UNITS[unitType];
 			deuterium -= DEUTERIUM_COST_UNITS[unitType];
-			
 		}
-
-		if (count > 0 && lastBuildMessage.isEmpty()) {
-			lastBuildMessage =n + " " + UNIT_NAMES[unitType] + "s created!";
+		if (n_possible == 0) {
+			throw new ResourceException("[!] Not enough resources for any "+UNIT_NAMES[unitType]+"s.");
+		} else if (n_possible < n){
+			throw new ResourceException("[!] Not enough resources. Only "+n_possible+" "+UNIT_NAMES[unitType]+"s have been built.");
+		}
+		if (Main.isConsoleMode()) {
+			System.out.println(n_possible+" "+UNIT_NAMES[unitType]+" built");
 		}
 	}
-
 	
-	public void newLightHunter(int n) {
+	public void newLightHunter(int n) throws ResourceException {
 		newMilitaryUnit(n, 0);
 	}
 	
-	public void newHeavyHunter(int n) {
+	public void newHeavyHunter(int n) throws ResourceException {
 		newMilitaryUnit(n, 1);
 	}
 	
-	public void newBattleship(int n) {
+	public void newBattleship(int n) throws ResourceException {
 		newMilitaryUnit(n, 2);
 	}
 	
-	public void newArmoredShip(int n) {
+	public void newArmoredShip(int n) throws ResourceException {
 		newMilitaryUnit(n, 3);
 	}
 	
-	public void newMissileLauncher(int n) {
+	public void newMissileLauncher(int n) throws ResourceException {
 		newMilitaryUnit(n, 4);
 	}
 	
-	public void newIonCannon(int n) {
+	public void newIonCannon(int n) throws ResourceException {
 		newMilitaryUnit(n, 5);
 	}
 	
-	public void newPlasmaCannon(int n) {
+	public void newPlasmaCannon(int n) throws ResourceException {
 		newMilitaryUnit(n, 6);
 	}
 	

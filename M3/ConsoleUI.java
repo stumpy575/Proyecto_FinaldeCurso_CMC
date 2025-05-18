@@ -117,7 +117,11 @@ public class ConsoleUI implements Variables {
 		if (unit_amount == 0) {
 			return;
 		}
-		game.build(unit, unit_amount);
+		try {
+			game.build(unit, unit_amount);
+		} catch (ResourceException e) {
+			System.out.println(e.toString().substring(e.toString().indexOf("[")));
+		}
 	}
 
 	private void upgradeTechnology(Scanner sc) {

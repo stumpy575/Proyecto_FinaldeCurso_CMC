@@ -176,7 +176,7 @@ public class Game implements Variables {
 		return battle_report_amount;
 	}
 	
-	public void build(int unit, int unit_amount) {
+	public void build(int unit, int unit_amount) throws ResourceException {
 		switch(unit) {
 		case 1: 
 			planet.newLightHunter(unit_amount);
