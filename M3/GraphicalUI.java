@@ -420,7 +420,6 @@ public class GraphicalUI extends JFrame implements Variables {
         setVisible(true);
     }
 
-
     public void start() {
     	game = new Game();
     	game.start();

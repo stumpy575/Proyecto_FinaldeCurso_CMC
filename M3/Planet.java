@@ -182,7 +182,7 @@ public class Planet implements Variables {
 		newMilitaryUnit(n, 6);
 	}
 	
-	public void printStats() {
+	public String getStats() {
 		String stats = "Planet Stats:\n\n";
 		stats += "TECHNOLOGY\n\n";
 		stats += String.format(PLANET_STATS_FORMAT, "Attack Technology", technologyAttack)+"\n";
@@ -199,6 +199,6 @@ public class Planet implements Variables {
 		stats += "RESOURCES\n\n";
 		stats += String.format(PLANET_STATS_FORMAT_RESOURCES, "Metal", metal)+"\n";
 		stats += String.format(PLANET_STATS_FORMAT_RESOURCES, "Deuterium", deuterium)+"\n";
-		System.out.println(stats);
+		return stats;
 	}
 }

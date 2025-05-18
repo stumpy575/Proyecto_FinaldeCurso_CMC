@@ -180,4 +180,14 @@ public interface Variables {
 	// Chance create unit in enemy army
 	// LightHunter, HeavyHunter, Battleship, ArmoredShip
 	public final int[] CHANCE_CREATE_UNIT_ENEMY_ARMY = {35,25,20,20};
+	
+	public final String GAME_OVER_ASCII_ART = 
+			  "   ____                         ___                 \r\n"
+			+ "  / ___| __ _ _ __ ___   ___   / _ \\__   _____ _ __ \r\n"
+			+ " | |  _ / _` | '_ ` _ \\ / _ \\ | | | \\ \\ / / _ \\ '__|\r\n"
+			+ " | |_| | (_| | | | | | |  __/ | |_| |\\ V /  __/ |   \r\n"
+			+ "  \\____|\\__,_|_| |_| |_|\\___|  \\___/  \\_/ \\___|_|   \r\n"
+			+ "                                                    \r\n"
+			+ "\r\n"
+			+ "";
 }

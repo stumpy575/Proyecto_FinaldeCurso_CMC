@@ -297,4 +297,13 @@ public class Battle implements Variables{
 	public int getWinningSide() {
 		return winningSide;
 	}
+
+	public int getCurrentSumUnitsPlanet() {
+		return currentSumUnitsPlanet;
+	}
+
+	public int getInitialSumUnitsPlanet() {
+		return initialSumUnitsPlanet;
+	}
+
 }

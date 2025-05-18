@@ -1,9 +1,15 @@
 package proyectoFinal;
 
+import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ConsoleUI implements Variables {
 	private Game game;
+	private Timer enemy_timer;
+	private boolean quit;
 	private enum menu_types {
 		MAIN, PLANET_STATS, BUILD_UNIT, BUILD_AMOUNT, UPGRADE_TECH, BATTLE_REPORTS
 	}
@@ -11,36 +17,43 @@ public class ConsoleUI implements Variables {
 	public void start() {
 		game = new Game();
 		game.start();
+		startEnemyTimer();
 		
 		Scanner sc = new Scanner(System.in);
-		boolean quit = false;
-		while (!quit) {
-			System.out.println(getMenu(menu_types.MAIN));
-			switch(chooseValidOption(sc, menu_types.MAIN)) {
-			case 1:
-				viewPlanetStats(sc);
-				pressToContinue();
-				break;
-			case 2:
-				build(sc);
-				pressToContinue();
-				break;
-			case 3:
-				upgradeTechnology(sc);
-				pressToContinue();
-				break;
-			case 4:
-				viewBattleReports(sc);
-				pressToContinue();
-				break;
-			case 5:
-				viewThreat(sc);
-				pressToContinue();
-				break;
-			case 0:
-				quit = true;
-				break;
+		quit = false;
+		try {
+			while (!quit) {
+				System.out.println(getMenu(menu_types.MAIN));
+				switch(chooseValidOption(sc, menu_types.MAIN)) {
+				case 1:
+					viewPlanetStats(sc);
+					pressToContinue();
+					break;
+				case 2:
+					build(sc);
+					pressToContinue();
+					break;
+				case 3:
+					upgradeTechnology(sc);
+					pressToContinue();
+					break;
+				case 4:
+					viewBattleReports(sc);
+					pressToContinue();
+					break;
+				case 5:
+					viewThreat(sc);
+					pressToContinue();
+					break;
+				case 0:
+					quit = true;
+					break;
+				}
 			}
+		} catch (IllegalStateException | NoSuchElementException e) {
+			game.gameOver();
+		} finally {
+			sc.close();
 		}
 	}
 	
@@ -104,7 +117,7 @@ public class ConsoleUI implements Variables {
 	}
 	
 	private void viewPlanetStats(Scanner sc) {
-		game.getPlanet().printStats();
+		System.out.println(game.getPlanet().getStats());
 	}
 
 	private void build(Scanner sc) {
@@ -186,4 +199,45 @@ public class ConsoleUI implements Variables {
 		}
 	}
 	
+	private void startEnemyTimer() {
+		enemy_timer = new Timer();
+		TimerTask enemy_timer_task = new TimerTask() {
+
+			public void run() {
+				if (game.isThreat_coming()) {
+					game.initBattle();
+					if (game.getBattle().getCurrentSumUnitsPlanet() == 0) {
+						System.out.println("\n".repeat(10));
+						if(game.getBattle().getInitialSumUnitsPlanet() > 0) {
+							System.out.println("!!! All your units have been destroyed !!!");
+						}
+						gameOver();
+					} else {
+						game.incrementWaveNumber();
+						game.setThreat_coming(false);
+						System.out.println("!!! A battle has ensued !!!");
+					}
+				} else {
+					game.setThreat_coming(true);
+					game.createEnemyArmy();
+					System.out.println("!!! A threat has been detected !!!");
+				}
+			}
+			
+		};
+		enemy_timer.schedule(enemy_timer_task, 5000, 20000); // Testing
+//		enemy_timer.schedule(enemy_timer_task, 90000, 90000);
+	}
+	
+	private void gameOver() {
+		quit = true;
+		enemy_timer.cancel();
+		System.out.println("!!! Your planet has been invaded !!!");
+		System.out.println("Press Enter to proceed to the Game Over screen");
+		try {
+			System.in.close();
+		} catch (IOException e) {
+			
+		}
+	}
 }
