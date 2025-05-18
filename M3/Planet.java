@@ -88,14 +88,14 @@ public class Planet implements Variables {
 		}
 	}
 	
-	private void checkEnoughResourcesToBuild(int n, int unitType) throws ResourceException {
+	private int checkEnoughResourcesToBuild(int n, int unitType) throws ResourceException {
 		int metal_cost = METAL_COST_UNITS[unitType];
 		int deuterium_cost = DEUTERIUM_COST_UNITS[unitType];
+		int n_possible = n;
 		if (metal<metal_cost*n || deuterium<deuterium_cost*n) {
-			int n_possible = n;
-			int n_possible_metal = (int) (metal/METAL_COST_UNITS[unitType]);
-			if (DEUTERIUM_COST_UNITS[unitType] > 0) {
-				int n_possible_deuterium = (int) (deuterium/DEUTERIUM_COST_UNITS[unitType]);
+			int n_possible_metal = (int) (metal/metal_cost);
+			if (deuterium_cost > 0) {
+				int n_possible_deuterium = (int) (deuterium/deuterium_cost);
 				if (n_possible_metal < n_possible_deuterium) {
 					n_possible = n_possible_metal;
 				} else {
@@ -104,12 +104,8 @@ public class Planet implements Variables {
 			} else {
 				n_possible = n_possible_metal;
 			}
-			if (n_possible == 0) {
-				throw new ResourceException("[!] Not enough resources for any "+UNIT_NAMES[unitType]+"s.");
-			} else {
-				throw new ResourceException("[!] Not enough resources. Only "+n_possible+" "+UNIT_NAMES[unitType]+"s will be built.");
-			}
 		}
+		return n_possible;
 	}
 	
 	private void addMilitaryUnit(int unitType, int armor, int attack) {
@@ -139,24 +135,8 @@ public class Planet implements Variables {
 		
 	}
 	
-	private void newMilitaryUnit(int n, int unitType) {
-		int n_possible = n;
-		try {
-			checkEnoughResourcesToBuild(n, unitType);
-		} catch (ResourceException e) {
-			int n_possible_metal = (int) (metal/METAL_COST_UNITS[unitType]);
-			if (DEUTERIUM_COST_UNITS[unitType] > 0) {
-				int n_possible_deuterium = (int) (deuterium/DEUTERIUM_COST_UNITS[unitType]);
-				if (n_possible_metal < n_possible_deuterium) {
-					n_possible = n_possible_metal;
-				} else {
-					n_possible = n_possible_deuterium;
-				}
-			} else {
-				n_possible = n_possible_metal;
-			}
-			System.out.println(e.toString().substring(e.toString().indexOf("[")));
-		}
+	private void newMilitaryUnit(int n, int unitType) throws ResourceException {
+		int n_possible = checkEnoughResourcesToBuild(n, unitType);
 		for (int i = 0; i<n_possible; i++) {
 			final int armor = (int) (ARMOR_UNITS[unitType]*(100+technologyDefense*PLUS_ARMOR_UNITS_BY_TECHNOLOGY[unitType])/100);
 			final int attack = (int) (BASE_DAMAGE_UNITS[unitType]*(100+technologyAttack*PLUS_ATTACK_UNITS_BY_TECHNOLOGY[unitType])/100);
@@ -164,36 +144,41 @@ public class Planet implements Variables {
 			metal -= METAL_COST_UNITS[unitType];
 			deuterium -= DEUTERIUM_COST_UNITS[unitType];
 		}
+		if (n_possible == 0) {
+			throw new ResourceException("[!] Not enough resources for any "+UNIT_NAMES[unitType]+"s.");
+		} else if (n_possible < n){
+			throw new ResourceException("[!] Not enough resources. Only "+n_possible+" "+UNIT_NAMES[unitType]+"s have been built.");
+		}
 		if (Main.isConsoleMode()) {
 			System.out.println(n_possible+" "+UNIT_NAMES[unitType]+" built");
 		}
 	}
 	
-	public void newLightHunter(int n) {
+	public void newLightHunter(int n) throws ResourceException {
 		newMilitaryUnit(n, 0);
 	}
 	
-	public void newHeavyHunter(int n) {
+	public void newHeavyHunter(int n) throws ResourceException {
 		newMilitaryUnit(n, 1);
 	}
 	
-	public void newBattleship(int n) {
+	public void newBattleship(int n) throws ResourceException {
 		newMilitaryUnit(n, 2);
 	}
 	
-	public void newArmoredShip(int n) {
+	public void newArmoredShip(int n) throws ResourceException {
 		newMilitaryUnit(n, 3);
 	}
 	
-	public void newMissileLauncher(int n) {
+	public void newMissileLauncher(int n) throws ResourceException {
 		newMilitaryUnit(n, 4);
 	}
 	
-	public void newIonCannon(int n) {
+	public void newIonCannon(int n) throws ResourceException {
 		newMilitaryUnit(n, 5);
 	}
 	
-	public void newPlasmaCannon(int n) {
+	public void newPlasmaCannon(int n) throws ResourceException {
 		newMilitaryUnit(n, 6);
 	}
 	

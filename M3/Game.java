@@ -21,7 +21,9 @@ public class Game implements Variables {
 		battle_development_logs = new String[5];
 		threat_coming = false;
 		startResourcesTimer();
-		startEnemyTimer();
+		if (Main.isConsoleMode()) {
+			startEnemyTimer();
+		}
 	}
 	
 	private void startResourcesTimer() {
@@ -57,7 +59,7 @@ public class Game implements Variables {
 //		enemy_timer.schedule(enemy_timer_task, 90000, 90000);
 	}
 	
-	private void createEnemyArmy() {
+	public void createEnemyArmy() {
 		initEnemyArmy();
 		int metal_remaining = enemy_metal;
 		int deuterium_remaining = enemy_deuterium;
@@ -119,7 +121,7 @@ public class Game implements Variables {
 		return -1;
 	}
 	
-	private void initBattle() {
+	public void initBattle() {
 		Battle battle = new Battle(planet.getArmy(), enemy_army);
 		battle.performBattle();
 		
@@ -176,27 +178,27 @@ public class Game implements Variables {
 		return battle_report_amount;
 	}
 	
-	public void build(int unit, int unit_amount) {
-		switch(unit) {
-		case 1: 
+	public void build(int unitType, int unit_amount) throws ResourceException {
+		switch(unitType) {
+		case 0: 
 			planet.newLightHunter(unit_amount);
 			break;
-		case 2: 
+		case 1: 
 			planet.newHeavyHunter(unit_amount);
 			break;
-		case 3: 
+		case 2: 
 			planet.newBattleship(unit_amount);
 			break;
-		case 4: 
+		case 3: 
 			planet.newArmoredShip(unit_amount);
 			break;
-		case 5: 
+		case 4: 
 			planet.newMissileLauncher(unit_amount);
 			break;
-		case 6: 
+		case 5: 
 			planet.newIonCannon(unit_amount);
 			break;
-		case 7: 
+		case 6: 
 			planet.newPlasmaCannon(unit_amount);
 			break;
 		}
