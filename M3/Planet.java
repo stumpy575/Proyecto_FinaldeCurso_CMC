@@ -138,36 +138,43 @@ public class Planet implements Variables {
 		}
 		
 	}
+	//igual es un poco guarrada esto pero estoy cansado ya de que no pueda coger la excepcion
+	private String lastBuildMessage = "";
+
+	public String getLastBuildMessage() {
+		return lastBuildMessage;
+	}
 	
 	private void newMilitaryUnit(int n, int unitType) {
-		int n_possible = n;
-		try {
-			checkEnoughResourcesToBuild(n, unitType);
-		} catch (ResourceException e) {
-			int n_possible_metal = (int) (metal/METAL_COST_UNITS[unitType]);
-			if (DEUTERIUM_COST_UNITS[unitType] > 0) {
-				int n_possible_deuterium = (int) (deuterium/DEUTERIUM_COST_UNITS[unitType]);
-				if (n_possible_metal < n_possible_deuterium) {
-					n_possible = n_possible_metal;
+		int count = 0;
+		lastBuildMessage="";
+		
+		for (int i = 0; i < n; i++) {
+			try {
+				checkEnoughResourcesToBuild(1, unitType);
+				count++;
+			} catch (ResourceException e) {
+				if (count == 0) {
+					lastBuildMessage = e.getMessage(); // excepcion de que no se cree ninguna
 				} else {
-					n_possible = n_possible_deuterium;
+					lastBuildMessage = "[!] Not enough resources. Only " + count + " " + UNIT_NAMES[unitType] + "s will be built.";
 				}
-			} else {
-				n_possible = n_possible_metal;
+				break;
 			}
-			System.out.println(e.toString().substring(e.toString().indexOf("[")));
-		}
-		for (int i = 0; i<n_possible; i++) {
+
 			final int armor = (int) (ARMOR_UNITS[unitType]*(100+technologyDefense*PLUS_ARMOR_UNITS_BY_TECHNOLOGY[unitType])/100);
 			final int attack = (int) (BASE_DAMAGE_UNITS[unitType]*(100+technologyAttack*PLUS_ATTACK_UNITS_BY_TECHNOLOGY[unitType])/100);
 			addMilitaryUnit(unitType, armor, attack);
 			metal -= METAL_COST_UNITS[unitType];
 			deuterium -= DEUTERIUM_COST_UNITS[unitType];
+			
 		}
-		if (Main.isConsoleMode()) {
-			System.out.println(n_possible+" "+UNIT_NAMES[unitType]+" built");
+
+		if (count > 0 && lastBuildMessage.isEmpty()) {
+			lastBuildMessage =n + " " + UNIT_NAMES[unitType] + "s created!";
 		}
 	}
+
 	
 	public void newLightHunter(int n) {
 		newMilitaryUnit(n, 0);
