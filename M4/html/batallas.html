@@ -25,6 +25,8 @@
 
     <input type="number" id="battleNumber" placeholder="Enter battle number" min="1">
     <button onclick="showBattleReport()">View Report</button>
+    <p id="battleMessage" style="color: #ff6666a1; margin-top: 1rem;"></p>
+
 
     <div id="battleReportContainer" style="margin-top: 2rem;">
       <iframe id="battleFrame" src="" width="80%" height="500px" style="border: none; display: none;"></iframe>
@@ -39,13 +41,35 @@
     function showBattleReport() {
       const number = document.getElementById('battleNumber').value;
       const frame = document.getElementById('battleFrame');
+      const message = document.getElementById('battleMessage');
+  
       if (number) {
-        frame.src = `battles/battle${number}.html`;
-        frame.style.display = 'block';
+        const path = `battles/battle${number}.html`;
+  
+        fetch(path)
+          .then(response => {
+            if (response.ok) {
+              frame.src = path;
+              frame.style.display = 'block';
+              message.textContent = '';
+            } else {
+              frame.style.display = 'none';
+              frame.src = '';
+              message.textContent = 'This battle has not been fought yet.';
+            }
+          })
+          .catch(() => {
+            frame.style.display = 'none';
+            frame.src = '';
+            message.textContent = 'This battle has not been fought yet.';
+          });
       } else {
         frame.style.display = 'none';
+        frame.src = '';
+        message.textContent = '';
       }
     }
   </script>
+  
 </body>
 </html>
