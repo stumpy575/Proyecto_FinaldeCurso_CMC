@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.TimerTask;
 import java.util.Timer;
 
-public class GraphicalUI extends JFrame implements Variables {
+public class GraphicalUI_old extends JFrame implements Variables {
 <<<<<<< HEAD
 	Game game;
     private JProgressBar progressBar;

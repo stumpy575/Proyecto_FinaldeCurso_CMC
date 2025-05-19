@@ -381,14 +381,10 @@ public class GraphicalUI extends JFrame implements Variables {
 
 				if (opcion == JOptionPane.YES_OPTION) {
 					try {
-						game.build(unitType, n);
-						console.append(game.getPlanet().getErrorMessage());
-						
-					} catch (ResourceException ex) {
-						console.append("\n>" + ex.getMessage());
-						console.setCaretPosition(console.getDocument().getLength());
-
-					}
+                        game.build(unitType, n);
+                    } catch (ResourceException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
+                    }
 				}
 				updateData();
 
