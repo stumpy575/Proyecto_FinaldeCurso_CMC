@@ -239,12 +239,18 @@ button:hover {
 /* Responsive: móviles y tablets */
 @media screen and (max-width: 1024px) {
     nav ul {
-        flex-direction: column;
-        align-items: center;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none; 
+        -ms-overflow-style: none; 
     }
 
+    nav ul::-webkit-scrollbar {
+        display: none; /* Chrome, Safari y Opera */
+    }
     nav ul li {
-        margin: 10px 0;
+        margin: 0 5px;
+        white-space: nowrap;
     }
 
     img.animada {
