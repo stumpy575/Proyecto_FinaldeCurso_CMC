@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 public class Game implements Variables {
 	private Planet planet;
+	private static int battleCounter = 1;
 	private String[] battle_stats_logs;
 	private String[] battle_development_logs;
 	
@@ -25,6 +26,7 @@ public class Game implements Variables {
 			startEnemyTimer();
 		}
 	}
+<<<<<<< HEAD
 	
 <<<<<<< HEAD
 	private void startResourcesTimer() {
@@ -32,6 +34,9 @@ public class Game implements Variables {
 		TimerTask resources_timer_task = new TimerTask() {
 			public void run() {
 =======
+=======
+
+>>>>>>> marc
 	public void startResourcesTimer() {
 		Timer resources_timer = new Timer();
 		TimerTask resources_timer_task = new TimerTask() {
@@ -148,6 +153,11 @@ public class Game implements Variables {
 		}
 		enemy_metal = enemy_metal*(100+ENEMY_FLEET_INCREASE)/100;
 		enemy_deuterium = enemy_deuterium*(100+ENEMY_FLEET_INCREASE)/100;
+		try {
+		    BattleExporter.exportBattleToHTML(battle, battleCounter++);
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
 	}
 	
 	private void addLogToArray(String[] log_array, String log) {

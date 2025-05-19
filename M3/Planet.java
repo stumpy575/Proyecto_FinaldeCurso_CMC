@@ -134,6 +134,7 @@ public class Planet implements Variables {
 		}
 		
 	}
+<<<<<<< HEAD
 	
 	private void newMilitaryUnit(int n, int unitType) throws ResourceException {
 		int n_possible = checkEnoughResourcesToBuild(n, unitType);
@@ -153,6 +154,40 @@ public class Planet implements Variables {
 			System.out.println(n_possible+" "+UNIT_NAMES[unitType]+" built");
 		}
 	}
+=======
+	//igual es un poco guarrada esto pero estoy cansado ya de que no pueda coger la excepcion
+	private String errorMessage = "";
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+	private void newMilitaryUnit(int n, int unitType) throws ResourceException {
+		int count = 0;
+		errorMessage = "";
+
+		for (int i = 0; i < n; i++) {
+			try {
+				checkEnoughResourcesToBuild(1, unitType); 
+			} catch (ResourceException e) {
+				break;
+			}
+			final int armor = (int) (ARMOR_UNITS[unitType] * (100 + technologyDefense * PLUS_ARMOR_UNITS_BY_TECHNOLOGY[unitType]) / 100);
+			final int attack = (int) (BASE_DAMAGE_UNITS[unitType] * (100 + technologyAttack * PLUS_ATTACK_UNITS_BY_TECHNOLOGY[unitType]) / 100);
+			addMilitaryUnit(unitType, armor, attack);
+			metal -= METAL_COST_UNITS[unitType];
+			deuterium -= DEUTERIUM_COST_UNITS[unitType];
+			count++;
+		}
+		if (count == 0) {
+			throw new ResourceException("[!] Not enough resources for any " + UNIT_NAMES[unitType] + "s.");
+		} else if (count < n) {
+			throw new ResourceException("[!] Not enough resources. Only " + count + " " + UNIT_NAMES[unitType] + "s were built.");
+		} else {
+			errorMessage = count + " " + UNIT_NAMES[unitType] + "s created!";
+		}
+	}
+
+
+>>>>>>> marc
 	
 	public void newLightHunter(int n) throws ResourceException {
 		newMilitaryUnit(n, 0);
