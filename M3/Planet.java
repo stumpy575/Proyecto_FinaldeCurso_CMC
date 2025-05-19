@@ -139,68 +139,63 @@ public class Planet implements Variables {
 		
 	}
 	//igual es un poco guarrada esto pero estoy cansado ya de que no pueda coger la excepcion
-	private String lastBuildMessage = "";
-
-	public String getLastBuildMessage() {
-		return lastBuildMessage;
+	private String errorMessage = "";
+	public String getErrorMessage() {
+		return errorMessage;
 	}
-	
-	private void newMilitaryUnit(int n, int unitType) {
+	private void newMilitaryUnit(int n, int unitType) throws ResourceException {
 		int count = 0;
-		lastBuildMessage="";
-		
+		errorMessage = "";
+
 		for (int i = 0; i < n; i++) {
 			try {
-				checkEnoughResourcesToBuild(1, unitType);
-				count++;
+				checkEnoughResourcesToBuild(1, unitType); 
 			} catch (ResourceException e) {
-				if (count == 0) {
-					lastBuildMessage = e.getMessage(); // excepcion de que no se cree ninguna
-				} else {
-					lastBuildMessage = "[!] Not enough resources. Only " + count + " " + UNIT_NAMES[unitType] + "s will be built.";
-				}
 				break;
 			}
-
-			final int armor = (int) (ARMOR_UNITS[unitType]*(100+technologyDefense*PLUS_ARMOR_UNITS_BY_TECHNOLOGY[unitType])/100);
-			final int attack = (int) (BASE_DAMAGE_UNITS[unitType]*(100+technologyAttack*PLUS_ATTACK_UNITS_BY_TECHNOLOGY[unitType])/100);
+			final int armor = (int) (ARMOR_UNITS[unitType] * (100 + technologyDefense * PLUS_ARMOR_UNITS_BY_TECHNOLOGY[unitType]) / 100);
+			final int attack = (int) (BASE_DAMAGE_UNITS[unitType] * (100 + technologyAttack * PLUS_ATTACK_UNITS_BY_TECHNOLOGY[unitType]) / 100);
 			addMilitaryUnit(unitType, armor, attack);
 			metal -= METAL_COST_UNITS[unitType];
 			deuterium -= DEUTERIUM_COST_UNITS[unitType];
-			
+			count++;
 		}
-
-		if (count > 0 && lastBuildMessage.isEmpty()) {
-			lastBuildMessage =n + " " + UNIT_NAMES[unitType] + "s created!";
+		if (count == 0) {
+			throw new ResourceException("[!] Not enough resources for any " + UNIT_NAMES[unitType] + "s.");
+		} else if (count < n) {
+			throw new ResourceException("[!] Not enough resources. Only " + count + " " + UNIT_NAMES[unitType] + "s were built.");
+		} else {
+			errorMessage = count + " " + UNIT_NAMES[unitType] + "s created!";
 		}
 	}
 
+
 	
-	public void newLightHunter(int n) {
+	public void newLightHunter(int n) throws ResourceException {
 		newMilitaryUnit(n, 0);
 	}
 	
-	public void newHeavyHunter(int n) {
+	public void newHeavyHunter(int n) throws ResourceException {
 		newMilitaryUnit(n, 1);
 	}
 	
-	public void newBattleship(int n) {
+	public void newBattleship(int n) throws ResourceException {
 		newMilitaryUnit(n, 2);
 	}
 	
-	public void newArmoredShip(int n) {
+	public void newArmoredShip(int n) throws ResourceException {
 		newMilitaryUnit(n, 3);
 	}
 	
-	public void newMissileLauncher(int n) {
+	public void newMissileLauncher(int n) throws ResourceException {
 		newMilitaryUnit(n, 4);
 	}
 	
-	public void newIonCannon(int n) {
+	public void newIonCannon(int n) throws ResourceException {
 		newMilitaryUnit(n, 5);
 	}
 	
-	public void newPlasmaCannon(int n) {
+	public void newPlasmaCannon(int n) throws ResourceException {
 		newMilitaryUnit(n, 6);
 	}
 	

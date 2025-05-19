@@ -13,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.io.Console;
 import java.io.IOException;
 import java.net.URL;
+import java.util.TimerTask;
+import java.util.Timer;
 
 public class GraphicalUI extends JFrame implements Variables {
 	private Game game;
@@ -39,6 +41,9 @@ public class GraphicalUI extends JFrame implements Variables {
 	public GraphicalUI() {
 		game = new Game();
 		game.start();
+		startNextWaveTimer();
+	
+		updateResourcesTimer();
 
 		setTitle("The Great Space Wars");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -52,10 +57,10 @@ public class GraphicalUI extends JFrame implements Variables {
 		JMenu optionsmenu = new JMenu("Options");
 		menuBar.add(optionsmenu);
 		setJMenuBar(menuBar);
-		JMenuItem viewReportItem = new JMenuItem("View Battle Report");	
+		JMenuItem viewReportItem = new JMenuItem("View Battle Report");
 		JMenuItem clearConsoleItem = new JMenuItem("Clear Console");
 		JMenuItem exitItem = new JMenuItem("Exit Game");
-		
+
 		optionsmenu.add(viewReportItem);
 		optionsmenu.add(clearConsoleItem);
 		optionsmenu.add(exitItem);
@@ -274,7 +279,7 @@ public class GraphicalUI extends JFrame implements Variables {
 					infodeuterium.setText("Deuterium: " + game.getPlanet().getDeuterium());
 
 				} catch (ResourceException e1) {
-					
+
 					e1.printStackTrace();
 					console.append("\n>" + e1.getMessage());
 					console.setCaretPosition(console.getDocument().getLength());
@@ -292,7 +297,7 @@ public class GraphicalUI extends JFrame implements Variables {
 					infodeuterium.setText("Deuterium: " + game.getPlanet().getDeuterium());
 
 				} catch (ResourceException e1) {
-				
+
 					e1.printStackTrace();
 					console.append("\n>" + e1.getMessage());
 					console.setCaretPosition(console.getDocument().getLength());
@@ -311,12 +316,12 @@ public class GraphicalUI extends JFrame implements Variables {
 				build(1);
 			}
 		});
-		labelImgArmoredShip.addMouseListener(new MouseAdapter() {
+		labelImgBattleship.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				build(2);
 			}
 		});
-		labelImgBattleship.addMouseListener(new MouseAdapter() {
+		labelImgArmoredShip.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				build(3);
 			}
@@ -339,7 +344,7 @@ public class GraphicalUI extends JFrame implements Variables {
 
 		int[] clickcount = { 0 };
 		planetImage.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {			
+			public void mouseClicked(MouseEvent e) {
 				clickcount[0]++;
 				if (clickcount[0] == 10) {
 					try {
@@ -356,12 +361,13 @@ public class GraphicalUI extends JFrame implements Variables {
 				}
 			}
 		});
-		startEnemyTimer();
+		setVisible(true);
 
 	}
-	//metodos
+
+	// metodos
 	private void build(int unitType) {
-//		String input ="";
+		// String input ="";
 		String input = JOptionPane.showInputDialog(null,
 				"How many " + UNIT_NAMES[unitType] + "s do you want to create?");
 		if (input != null) {
@@ -377,9 +383,9 @@ public class GraphicalUI extends JFrame implements Variables {
 				if (opcion == JOptionPane.YES_OPTION) {
 					try {
 						game.build(unitType, n);
-
+						console.append(game.getPlanet().getErrorMessage());
+						
 					} catch (ResourceException ex) {
-						//                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Resource Warning", JOptionPane.WARNING_MESSAGE);
 						console.append("\n>" + ex.getMessage());
 						console.setCaretPosition(console.getDocument().getLength());
 
@@ -404,26 +410,42 @@ public class GraphicalUI extends JFrame implements Variables {
 			datalabel_units[i].setText(UNIT_NAMES[i] + ": " + game.getPlanet().getArmy()[i].size());
 		}
 	}
+	private void updateResourcesTimer() {
+		java.util.Timer resourcesupdate_timer = new java.util.Timer();
+		TimerTask resourcesupdate_task = new TimerTask() {
+			public void run() {
+				updateData();
+				console.append("\n>"+PLANET_METAL_GENERATED+" Metal and " + PLANET_DEUTERIUM_GENERATED + " Deuterium generated");
+			}
+		};
+		resourcesupdate_timer.schedule(resourcesupdate_task, 60500,60500);
+	}
+	private void startNextWaveTimer() {
+		int delay = ((int) (Math.random() * 3) + 2) * 60 * 1000; // 2 a 4 minutos
+		java.util.Timer nextwave_timer = new java.util.Timer();
+		TimerTask nextwave_task = new TimerTask() {
+			public void run() {
+				startEnemyTimer();
+			}
+		};
+		nextwave_timer.schedule(nextwave_task, delay);
+	}
 
-	public void startEnemyTimer() {
-		Timer timer = new Timer(200, null); // 100 ms por tick (~10 segundos = 1000)
+	private void startEnemyTimer() {
 		final int[] progreso = { 0 };
-
 		CardLayout cl = (CardLayout) attackPanel.getLayout();
 
-		timer.addActionListener(new ActionListener() {
+		javax.swing.Timer enemytimer = new javax.swing.Timer(1000, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				progressBar.setValue(progreso[0]);
 				progressBar.setString(progreso[0] + " %");
-				//
+
 				if (progreso[0] == 0) {
 					console.append("\n>Unidentified fleet approaching in our airspace!");
 				}
 
 				progreso[0]++;
 
-				// genera y muestra los enemigos al segundo cincuenta
 				if (progreso[0] == 50) {
 					game.createEnemyArmy();
 					cl.show(attackPanel, "ENEMIGOS");
@@ -445,16 +467,15 @@ public class GraphicalUI extends JFrame implements Variables {
 						enemyPanels[i].add(Box.createVerticalStrut(2));
 						enemyPanels[i].add(txt);
 						enemyPanels[i].add(Box.createVerticalGlue());
-						enemyPanels[i].repaint(); // mantenemos repaint
+						enemyPanels[i].repaint();
 					}
 				}
 
-				// inicia la batalla en el segundo 100
-				if (progreso[0] == 101) {
+				if (progreso[0] == 100) {
 					game.initBattle();
 					updateData();
 					console.append(
-							"\n>A clash between our troops and our enemies has occured, commander! Check your datapad for the battle report.");
+							"\n>A clash between our troops and our enemies has occurred, commander! Check your datapad for the battle report.");
 					console.setCaretPosition(console.getDocument().getLength());
 
 					progreso[0] = 0;
@@ -464,11 +485,13 @@ public class GraphicalUI extends JFrame implements Variables {
 						enemyPanels[i].removeAll();
 						enemyPanels[i].repaint();
 					}
+
+					startNextWaveTimer();
 				}
 			}
 		});
-
-		timer.start();
-		setVisible(true);
+		enemytimer.start();
 	}
+
+
 }
