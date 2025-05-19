@@ -7,6 +7,10 @@ import java.util.TimerTask;
 public class Game implements Variables {
 	private Planet planet;
 	private static int battleCounter = 1;
+	private Battle battle;
+	private int waveNumber;
+	private Timer resources_timer;
+	private Timer enemy_timer;
 	private String[] battle_stats_logs;
 	private String[] battle_development_logs;
 	
@@ -21,44 +25,22 @@ public class Game implements Variables {
 		battle_stats_logs = new String[5];
 		battle_development_logs = new String[5];
 		threat_coming = false;
+		waveNumber = 1;
 		startResourcesTimer();
-		if (Main.isConsoleMode()) {
-			startEnemyTimer();
-		}
 	}
-
-	public void startResourcesTimer() {
-		Timer resources_timer = new Timer();
+	
+	private void startResourcesTimer() {
+		resources_timer = new Timer();
 		TimerTask resources_timer_task = new TimerTask() {
 			public void run() {
-				
-				System.out.println(PLANET_METAL_GENERATED+" Metal and " + PLANET_DEUTERIUM_GENERATED + " Deuterium generated");
+				if (Main.isConsoleMode()) {
+					System.out.println(PLANET_METAL_GENERATED+" Metal and " + PLANET_DEUTERIUM_GENERATED + " Deuterium generated");
+				}
 				planet.setMetal(planet.getMetal() + PLANET_METAL_GENERATED);
 				planet.setDeuterium(planet.getDeuterium() + PLANET_DEUTERIUM_GENERATED);
 			}
 		};
 		resources_timer.schedule(resources_timer_task, 30000, 30000);
-	}
-	
-	private void startEnemyTimer() {
-		Timer enemy_timer = new Timer();
-		TimerTask enemy_timer_task = new TimerTask() {
-
-			public void run() {
-				if (threat_coming) {
-					initBattle();
-					threat_coming = false;
-					System.out.println("!!! A battle has occurred !!!");
-				} else {
-					threat_coming = true;
-					createEnemyArmy();
-					System.out.println("!!! A threat has been detected !!!");
-				}
-			}
-			
-		};
-		enemy_timer.schedule(enemy_timer_task, 5000, 20000); // Testing
-//		enemy_timer.schedule(enemy_timer_task, 90000, 90000);
 	}
 	
 	public void createEnemyArmy() {
@@ -124,7 +106,7 @@ public class Game implements Variables {
 	}
 	
 	public void initBattle() {
-		Battle battle = new Battle(planet.getArmy(), enemy_army);
+		battle = new Battle(planet.getArmy(), enemy_army);
 		battle.performBattle();
 		
 		String battle_stats = battle.getBattleStatistics();
@@ -215,6 +197,10 @@ public class Game implements Variables {
 		return planet;
 	}
 
+	public Battle getBattle() {
+		return battle;
+	}
+
 	public String[] getBattle_stats_logs() {
 		return battle_stats_logs;
 	}
@@ -227,7 +213,26 @@ public class Game implements Variables {
 		return threat_coming;
 	}
 
+	public void setThreat_coming(boolean threat_coming) {
+		this.threat_coming = threat_coming;
+	}
+
 	public ArrayList<MilitaryUnit>[] getEnemy_army() {
 		return enemy_army;
 	}
+
+	public void gameOver() {
+		if (Main.isConsoleMode()) {
+			System.out.println("\n".repeat(50));
+			System.out.println(GAME_OVER_ASCII_ART);
+			System.out.println("You survived until Wave #"+waveNumber);
+		} else {
+			
+		}
+		resources_timer.cancel();
+	}
+	
+    public void incrementWaveNumber() {
+    	waveNumber++;
+    }
 }
